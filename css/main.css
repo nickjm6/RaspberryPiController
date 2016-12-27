@@ -1,0 +1,16 @@
+.btn{
+	width: 150px;
+}
+
+#currentOSPic{
+	width:200px;
+	height:200px;
+}
+
+.center{
+	text-align: center;
+}
+
+#marginDown{
+	margin-top: 15px;
+}
