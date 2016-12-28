@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	  <link rel="stylesheet" type="text/css" href="/css/piController.css">
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	  <script src="/javascript/systemFunctions.js"></script>
+	  <script src="/javascript/startup.js"></script>
+	  <link rel="icon" type="image/png" href="/images/raspbian.png" />
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>Raspberry Pi Controller</title>
+	</head>
+	<body>
+	  <nav class="navbar navbar-inverse navbar-fixed-top">
+	    <div class="container-fluid">
+	      <div class='navbar-header'>
+	        <a class="navbar-brand" href="/index.html">MyWebsite</a>
+	      </div>
+	      <ul class="nav navbar-nav">
+	        <li><a href="/index.html">Home</a></li>
+	        <li class="active"><a href="#">Pi Controller</a></li>
+	        <li><a href="/html/pokemon.html">PokemonApp</a></li>
+	      </ul>
+	    </div>
+	  </nav>
+	  <div class="container">
+		<div class="jumbotron">
+		  <h1 class="center">Raspberry Pi Controller</h1>
+		</div>
+	  </div>
+	  <div class="container">
+	    <div class="jumbotron">
+	      <h2 class='center'>Action Center</h2>
+		  <div class="row">
+			<div class="col-md-4">
+			  <p>Switch OS</p>
+			</div>
+			<div class="col-md-4">
+			  <!-- <div class="dropdown">
+			    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">OS<span class='caret'></span></button>
+			    <ul class="dropdown-menu">
+			      <li><a href="#">Raspbian</a></li>
+			      <li><a href="#">RetroPie</a></li>
+			      <li><a href="#"">Kodi</a></li>
+			      <li><a href="#">RasPlex</a></li>
+			    </ul>
+			  </div> -->
+			  <div class="form-group">
+			    <label for="os">Select OS:</label>
+			    <select class="form-control" id="os">
+			      <option>Raspbian</option>
+			      <option>RetroPie</option>
+			      <option>Kodi</option>
+			      <option>RasPlex</option>
+			    </select>
+			  </div>
+		    </div>
+		    <div class="col-md-4 center" id="marginDown">
+		      <button type="button" onclick="switchOS();" class="btn btn-primary">Switch</button>
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-md-3 center">
+		      <h3>System Commands:</h3>
+		    </div>
+		    <div class="col-md-3 center" id="marginDown">
+		      <button type="button" onclick="updateServer();" class="btn btn-primary">Update</button>
+		    </div>
+		    <div class="col-md-3 center" id="marginDown">
+		      <button type="button" onclick="rebootServer();" class="btn btn-danger">Reboot</button>
+		    </div>
+		  </div>
+		</div>
+	  </div>
+	  <div class="container">
+	    <div class="center jumbotron">
+	      <h2 id="currentOS">Current OS: ???</h2>
+	      <break>
+	      <img id="currentOSPic" src='/images/question.png'>
+	    </div>
+	  </div>
+	</body>
+</html>

@@ -9,9 +9,9 @@ function updateServer(){
 
 function rebootServer(){
 	address = "%s/reboot", serverAddress
-	// $.get(address, function(data){
+	$.get(address, function(data){
 
-	// })
+	})
 }
 
 function switchOS(){

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<link rel="stylesheet" href="/css/pokemon.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/javascript/pokemon.js"></script>
+	<link rel="icon" type="image/png" href="/images/pokeball.png" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PokemonApp</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container-fluid">
+	    <div class='navbar-header'>
+	      <a class="navbar-brand" href="/index.html">MyWebsite</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	      <li><a href="/index.html">Home</a></li>
+	      <li><a href="/html/piController.html">Pi Controller</a></li>
+	      <li class="active"><a href="#">PokemonApp</a></li>
+	    </ul>
+	  </div>
+	</nav>
+	<div class="container" id="header">
+	  <div class="jumbotron">
+	    <div class="row center">
+	      <div class="col-md-3">
+	        <img src="/images/pokeball.png">
+	      </div>
+	      <div class="col-md-6">
+	      	<h1 id="title">Pokemon App</h1>
+	      </div>
+	      <div class="col-md-3">
+	        <img src="/images/pokeball.png">
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div class="container">
+	  <div class="jumbotron">
+	    <form method="get" class="form-horizontal">
+	      <div class="form-group">
+	        <label class="control-label col-sm-4" for="pokeName">Enter name of Pokemon:</label>
+	        <div class="col-sm-6">
+	          <input type="text" class="form-control" name="pokemon" id="pokeName" placeholder="Enter name of Pokemon">
+	        </div>
+	      </div>
+	      <div class="form-group">
+	        <div class="col-sm-offset-2 col-sm-10">
+	          <button type="submit" id="pokeSubmit" class="btn btn-default">Submit</button>
+	        </div>
+	      </div>
+	    </form>
+	  </div>
+	</div>
+  </body>
+</html>

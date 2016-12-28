@@ -7,7 +7,10 @@ function getOS(){
 function setOS(osName){
 	capName = osName[0].toUpperCase() + osName.substring(1)
 	$("#currentOS").text(capName)
-	picName = "images/" + osName + ".png"
+	picName = "/images/" + osName + ".png"
 	$("#currentOSPic").attr("src", picName)
 }
+
 getOS()
+
+
