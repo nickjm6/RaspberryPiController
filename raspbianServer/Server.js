@@ -11,41 +11,71 @@ var bodyParser = require('body-parser');
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false })); // for parsing application/x-www-form-urlencoded
 
-app.get("/switchOS", function(req, res){
-	osName = req.query.toLowerCase()
+app.post("/switchOS", function(req, res){
+	osName = req.body.osName
+	if(osName == undefined){
+		res.send("Please enter a valid OS")
+		return
+	}
+	osName = osName.toLowerCase()
+	password = sha256(req.body.password)
+	result = execSync("python ../scripts/passCheck.py /home/nickjm6/piPassword.txt " + password).toString()
+	result = parseInt(result)
 	if(osName == "kodi" || osName == "retropie" || osName == "rasplex"){
-		exec(osName, function(err, stdout, stderr){
+		if(result){
+			exec(osName, function(err, stdout, stderr){
 
-		})
+			})
+			res.send("successful")
+		}
+		else{
+			res.send("incorrect password")
+		}
 	}
 	else{
 		res.send("Invalid OS")
 	}
 });
 
-app.get("/update", function(req, res){
-	console.log("updating...")
-	exec("apt-get update && apt-get upgrade -y", function(err, stdout, stderr){
-		if(err)
-			console.log(stderr)
-		else
-			console.log(stdout)
-	});
+app.post("/update", function(req, res){
+	password = sha256(req.body.password)
+	result = execSync("python ../scripts/passCheck.py /home/nickjm6/piPassword.txt " + password).toString()
+	result = parseInt(result)
+	if(result){
+		exec("apt-get update && apt-get upgrade -y", function(err, stdout, stderr){
+			if(err)
+				console.log(stderr)
+			else
+				console.log(stdout)
+		});
+		res.send("update complete!")
+	}
+	else{
+		res.send("incorrect password")
+	}
 })
 
 app.get("/currentOS", function(req, res){
 	res.send("raspbian")
 })
 
-app.get("/reboot", function(req, res){
-	exec("reboot", function(err, stdout, stderr){
-		if(err)
-			console.log(stderr)
-		else
-			console.log(stdout)
-	});
+app.post("/reboot", function(req, res){
+	password = sha256(req.body.password)
+	result = execSync("python ../scripts/passCheck.py /home/nickjm6/piPassword.txt " + password).toString()
+	result = parseInt(result)
+	if(result){
+		exec("reboot", function(err, stdout, stderr){
+			if(err)
+				console.log(stderr)
+			else
+				console.log(stdout)
+		});
+		res.send("successful reboot")
+	}
+	else{
+		res.send("incorrect password")
+	}
 })
-
 var server = app.listen(8081, function () {
 
   var host = server.address().address;

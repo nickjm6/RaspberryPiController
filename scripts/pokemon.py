@@ -1,24 +1,24 @@
 import sys
 
 types = [
-	'normal',
-	'fighting',
-	'flying',
-	'poison',
-	'ground',
-	'rock',
-	'bug', 
-	'ghost',
-	'steel',
-	'fire',
-	'water',
-	'grass',
-	'electric',
-	'psychic',
-	'ice',
-	'dragon',
-	'dark',
-	'fairy'
+	'Normal',
+	'Fighting',
+	'Flying',
+	'Poison',
+	'Ground',
+	'Rock',
+	'Bug', 
+	'Ghost',
+	'Steel',
+	'Fire',
+	'Water',
+	'Grass',
+	'Electric',
+	'Psychic',
+	'Ice',
+	'Dragon',
+	'Dark',
+	'Fairy'
 ]
 
 filename = sys.argv[1]
@@ -29,7 +29,7 @@ for line in pokefile:
 	name = arr[0].lower()
 	typesArr = []
 	for i in range(1, len(arr)):
-		type = arr[i].lower()
+		type = arr[i]
 		if type not in types:
 			name += " %s" % type
 		else:

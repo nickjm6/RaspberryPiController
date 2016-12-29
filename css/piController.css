@@ -14,3 +14,12 @@
 #marginDown{
 	margin-top: 15px;
 }
+
+#myModal{
+	margin-top: 75px;
+	width: 750px;
+	height: 275px;
+	margin-left:25%;
+	background-color: white;
+	text-align: center;
+}
