@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<link rel="stylesheet" href="/css/serverDown.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/javascript/checkServer.js"></script>
+	<link rel="icon" type="image/png" href="/images/frown.png">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Server Down</title>
+  </head>
+  <body>
+  	<nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container-fluid">
+	    <div class='navbar-header'>
+	      <a class="navbar-brand" href="#">MyWebsite</a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	      <li><a href="/index.html">Home</a></li>
+	      <li class="active"><a href="#">Pi Controller</a></li>
+	      <li><a href="/html/pokemon.html">PokemonApp</a></li>
+	    </ul>
+	  </div>
+	</nav>
+  	<div class="container">
+  	  <div class="jumbotron">
+  	    <h1>Could Not Connect to Raspberry PI!</h1>
+  	    <h3>Sorry, but a connection to the raspberry pi could not be established. This means that either the raspberry pi is not connected to the internet, or you are not on the same network as the raspberry pi. Try again when you confirm that you and the raspberry pi are both connected to the same network!</h3>
+  	    <div class="row" text-align="center">
+  	      <div class="col-md-4"></div>
+  	      <div class="col-md-4">
+  	        <button type="button" id="home" class="btn btn-info">Home</button>
+  	        <button type="button" id="tryAgain" class="btn btn-info">Try Again</button>
+  	      </div>
+  	    </div>
+  	  </div>
+  	</div>
+  </body>
+
+</html>

@@ -31,7 +31,7 @@ for line in pokefile:
 	for i in range(1, len(arr)):
 		type = arr[i]
 		if type not in types:
-			name += " %s" % type
+			name += " %s" % type.lower()
 		else:
 			typesArr.append(type)
 	pokemon[name] = typesArr

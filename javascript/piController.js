@@ -1,11 +1,17 @@
 $(document).ready(function(){
 	var method = undefined
 	var currentOS = undefined
+	var address = "http://192.168.0.x:9876"
 
 	function getOS(){
-		$.get("/currentOS", function(data){
-			setOS(data)
-		});
+		httpAddress = address + "/currentOS"
+		$.get(httpAddress, function(data){
+			if(data == "kodi" || data == "raspbian" || data == "rasplex" || data == "retropie")
+				setOS(data)
+		})
+		.fail(function(){
+			window.location.replace("/html/serverDown.html");
+		})
 	}
 
 	function setOS(osName){
@@ -30,15 +36,28 @@ $(document).ready(function(){
 		password = $("#password").val()
 		switch(method){
 			case "reboot":
-				$.post("/reboot",{"password": password})
+				httpAddress = address + "/reboot"
+				jqxhr = $.post(httpAddress,{"password": password})
+				.fail(function(){
+					alert("Could not connect to server")
+				})
 				break;
 			case "update":
-				$.post("/update", {"password": password})
+				httpAddress = address + "/update"
+				jqxhr = $.post(httpAddress, {"password": password})
+				.fail(function(){
+					alert("Could not connect to server")
+				})
 				break;
 			case "switch":
-				newOS = $("#os").val()
-				setOS(newOS.toLowerCase())
-				$.post("/switchOS", {"password": password, "osName": currentOS})
+				httpAddress = address + "/switchOS"
+				jqxhr = $.post(httpAddress, {"password": password, "osName": currentOS}, function(){
+					newOS = $("#os").val()
+					setOS(newOS.toLowerCase())
+				})
+				.fail(function(){
+					alert("Could not connect to server")
+				})
 				break;
 			default:
 				alert("You have done fucked up")

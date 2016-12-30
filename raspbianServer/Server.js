@@ -11,6 +11,10 @@ var bodyParser = require('body-parser');
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false })); // for parsing application/x-www-form-urlencoded
 
+app.get("/", function(req, res){
+	res.send("TRUE")
+})
+
 app.post("/switchOS", function(req, res){
 	osName = req.body.osName
 	if(osName == undefined){
