@@ -1,11 +1,13 @@
 var express = require('express');
 var exec = require("child_process").exec;
+var execSync = require("child_process").execSync;
 var fs = require('fs');
 var path = require('path');
 var app = express();
 var jsonfile = require("jsonfile")
 var multer = require('multer');
 var bodyParser = require('body-parser');
+var sha256 = require("js-sha256")
 //var upload = multer();
 
 app.use(express.static(__dirname));

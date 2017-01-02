@@ -1,7 +1,8 @@
 $(document).ready(function(){
 	var method = undefined
 	var currentOS = undefined
-	var address = "http://192.168.0.x:9876"
+	var address = "http://192.168.0.16:9876"
+	var oses = ['kodi', 'raspbian', 'rasplex', 'retropie']
 
 	function getOS(){
 		httpAddress = address + "/currentOS"
@@ -17,6 +18,13 @@ $(document).ready(function(){
 	function setOS(osName){
 		capName = osName[0].toUpperCase() + osName.substring(1)
 		currentOS = osName
+		for(i in oses){
+			os = oses[i]
+			if(os != osName){
+				option = $("<option>" + os[0].toUpperCase() + os.substring(1) + "</option>")
+				$("#os").append(option)
+			}
+		}
 		$("#currentOS").text(capName)
 		picName = "/images/" + osName + ".png"
 		$("#currentOSPic").attr("src", picName)
@@ -37,23 +45,31 @@ $(document).ready(function(){
 		switch(method){
 			case "reboot":
 				httpAddress = address + "/reboot"
-				jqxhr = $.post(httpAddress,{"password": password})
+				$.post(httpAddress,{"password": password}, function(data){
+					alert(data)
+					if(data == "successful reboot")
+						window.location.replace("/html/reboot.html")
+				})
 				.fail(function(){
 					alert("Could not connect to server")
 				})
 				break;
 			case "update":
 				httpAddress = address + "/update"
-				jqxhr = $.post(httpAddress, {"password": password})
+				$.post(httpAddress, {"password": password}, function(data){
+					alert(data)
+				})
 				.fail(function(){
 					alert("Could not connect to server")
 				})
 				break;
 			case "switch":
 				httpAddress = address + "/switchOS"
-				jqxhr = $.post(httpAddress, {"password": password, "osName": currentOS}, function(){
-					newOS = $("#os").val()
-					setOS(newOS.toLowerCase())
+				$.post(httpAddress, {"password": password, "osName": $("#os").val()}, function(data){
+					alert(data)
+					if(data == "switching os"){
+						window.location.replace("/html/switch.html")
+					}
 				})
 				.fail(function(){
 					alert("Could not connect to server")

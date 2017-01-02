@@ -7,17 +7,22 @@ $(document).ready(function(){
 
 	function setCount(val){
 		count = parseInt(val)
-		if(count > 5){
+		i = 0
+		while(i < 800000000){
+			i += 1
+		}
+		if(count > 30){
 			$.get("/resetCount")
 			window.location.replace("/html/serverDown.html")
 		}
 		else{
-			$.get("192.168.0.x:9876", function(){
+			$.get("http://192.168.0.16:9876", function(){
+				alert("found it")
 				window.location.replace("/html/piController.html")
 			})
 			.fail(function(){
 				i = 0 
-				while(i < 400000000)
+				while(i < 200000000)
 					i++
 				$.get('/increment')
 				window.location.reload()
