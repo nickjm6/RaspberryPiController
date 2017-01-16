@@ -16,8 +16,7 @@ $(document).ready(function(){
 			window.location.replace("/html/serverDown.html")
 		}
 		else{
-			$.get("http://192.168.0.16:9876", function(){
-				alert("found it")
+			$.get("http://192.168.2.72:9876", function(){
 				window.location.replace("/html/piController.html")
 			})
 			.fail(function(){

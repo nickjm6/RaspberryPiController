@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$.get("http://192.168.0.16:9876", function(){
+	$.get("http://192.168.2.73:9876", function(){
 		window.location.replace("/html/piController.html")
 	})
 	$("#home").click(function(){

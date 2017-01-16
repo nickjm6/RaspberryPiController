@@ -1,8 +1,9 @@
 $(document).ready(function(){
 	var method = undefined
 	var currentOS = undefined
-	var address = "http://192.168.0.16:9876"
+	var address = "http://192.168.2.73:9876"
 	var oses = ['kodi', 'raspbian', 'rasplex', 'retropie']
+	getOS()
 
 	function getOS(){
 		httpAddress = address + "/currentOS"
@@ -46,7 +47,6 @@ $(document).ready(function(){
 			case "reboot":
 				httpAddress = address + "/reboot"
 				$.post(httpAddress,{"password": password}, function(data){
-					alert(data)
 					if(data == "successful reboot")
 						window.location.replace("/html/reboot.html")
 				})
@@ -57,7 +57,6 @@ $(document).ready(function(){
 			case "update":
 				httpAddress = address + "/update"
 				$.post(httpAddress, {"password": password}, function(data){
-					alert(data)
 				})
 				.fail(function(){
 					alert("Could not connect to server")
@@ -66,7 +65,6 @@ $(document).ready(function(){
 			case "switch":
 				httpAddress = address + "/switchOS"
 				$.post(httpAddress, {"password": password, "osName": $("#os").val()}, function(data){
-					alert(data)
 					if(data == "switching os"){
 						window.location.replace("/html/switch.html")
 					}
@@ -98,8 +96,6 @@ $(document).ready(function(){
 	$("#switch").click(function(){
 		setMethod("switch")
 	})
-
-	getOS()
 });
 
 
