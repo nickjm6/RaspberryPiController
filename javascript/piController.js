@@ -31,70 +31,90 @@ $(document).ready(function(){
 		$("#currentOSPic").attr("src", picName)
 	}
 
-	function setMethod(newMethod){
-		method = newMethod
+	function disableButtons(){
+		$("#reboot").prop("disabled", true)
+		$("#switch").prop("disabled", true)
+		$("#update").prop("disabled", true)
 	}
 
-	$("#password").keydown(function(event){
-		if (event.keyCode == 13){
-			$("#submit").click()
-		}
-	})
+	function enableButtons(){
+		$("#reboot").prop("disabled", false)
+		$("#switch").prop("disabled", false)
+		$("#update").prop("disabled", false)
+	}
 
-	$("#submit").click(function(){
-		password = $("#password").val()
-		switch(method){
-			case "reboot":
-				httpAddress = address + "/reboot"
-				$.post(httpAddress,{"password": password}, function(data){
-					if(data == "successful reboot")
-						window.location.replace("/html/reboot.html")
-				})
-				.fail(function(){
-					alert("Could not connect to server")
-				})
-				break;
-			case "update":
-				httpAddress = address + "/update"
-				$.post(httpAddress, {"password": password}, function(data){
-				})
-				.fail(function(){
-					alert("Could not connect to server")
-				})
-				break;
-			case "switch":
-				httpAddress = address + "/switchOS"
-				$.post(httpAddress, {"password": password, "osName": $("#os").val()}, function(data){
-					if(data == "switching os"){
-						window.location.replace("/html/switch.html")
-					}
-				})
-				.fail(function(){
-					alert("Could not connect to server")
-				})
-				break;
-			default:
-				alert("You have done fucked up")
-				break;
-		}
-		$("#password").val("")
-		$("#value").val("")
-	});
-
-	$(".closeButton").click(function(){
-		$("#password").val("")
-	});
-
-	$("#reboot").click(function(){
-		setMethod("reboot");
-	})
+	function notifyMessage(messageVal, typeVal){
+		$.notifyClose()
+		$.notify(
+			{message: messageVal},
+    		{
+        		delay: 10000,
+        		placement: {
+					from: "top",
+					align: "center"
+        		},
+        		type: typeVal
+    		}
+    	);
+	}
 
 	$("#update").click(function(){
-		setMethod("update");
+		httpAddress = address + "/update"
+		notifyMessage("updating OS...please wait until the system finishes updating to run any other commands", "info")
+		disableButtons()
+		$.post(httpAddress, function(data){
+			enableButtons()
+			notifyMessage("Finished updating! You may now perform other functions", "success")
+		})
+		.fail(function(){
+			enableButtons()
+			notifyMessage("Update Failed. you may now perform other functions though!", "danger")
+		})
+
+	})
+
+	$("#reboot").click(function(){
+		httpAddress = address + "/reboot"
+		$.post(httpAddress, function(data){
+			if(data == "successful reboot"){
+				window.location.replace("/html/reboot.html")
+			}
+		})
+		.fail(function(){
+			notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
+		})
 	})
 
 	$("#switch").click(function(){
-		setMethod("switch")
+		httpAddress = address + "/switchOS"
+		$.post(httpAddress, function(data){
+			if(data == "switching os"){
+				window.location.replace("/html/switch.html")
+			}
+		})
+		.fail(function(){
+			notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
+		})
+	})
+
+	$("#rca").click(function(){
+		httpAddress = address + "/rca"
+		$.post(httpAddress, function(data){
+			window.location.replace("/html/reboot.html")
+		})
+		.fail(function(){
+			notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
+		})
+	})
+
+	$("#hdmi").click(function(){
+		httpAddress = address + "/hdmi"
+		$.post(httpAddress, function(data){
+			window.location.replace("/html/reboot.html")
+		})
+		.fail(function(){
+			notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
+		})
 	})
 });
 

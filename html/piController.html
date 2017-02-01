@@ -5,6 +5,7 @@
 	  <link rel="stylesheet" type="text/css" href="/css/piController.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	  <script src="/javascript/bootstrap-notify/bootstrap-notify.min.js"></script>
 	  <script src="/javascript/systemFunctions.js"></script>
 	  <script src="/javascript/corsRequests.js"></script>
 	  <script src="/javascript/piController.js"></script>
@@ -35,7 +36,7 @@
 	    <div class="jumbotron">
 	      <h2 class='center'>Action Center</h2>
 		  <div class="row">
-			<div class="col-md-4">
+			<div class="col-md-4 marginDown center">
 			  <p>Switch OS</p>
 			</div>
 			<div class="col-md-4">
@@ -45,19 +46,25 @@
 			    </select>
 			  </div>
 		    </div>
-		    <div class="col-md-4 center" id="marginDown">
-		      <button type="button" id="switch" class="btn btn-primary" data-toggle='modal' data-target="#myModal">Switch</button>
+		    <div class="col-md-4 center marginDown">
+		      <button type="button" id="switch" class="btn btn-primary">Switch</button>
 		    </div>
 		  </div>
 		  <div class="row">
-		    <div class="col-md-3 center">
+		    <div class="col-md-4 center">
 		      <h3>System Commands:</h3>
 		    </div>
-		    <div class="col-md-3 center" id="marginDown">
-		      <button type="button" id="update" class="btn btn-primary" data-toggle='modal' data-target="#myModal">Update</button>
+		    <div class="col-md-2 center marginDown">
+		      <button type="button" id="update" class="btn btn-primary">Update</button>
 		    </div>
-		    <div class="col-md-3 center" id="marginDown">
-		      <button type="button" id="reboot" class="btn btn-danger" data-toggle='modal' data-target="#myModal">Reboot</button>
+		    <div class="col-md-2 center marginDown">
+		      <button type="button" id="reboot" class="btn btn-danger">Reboot</button>
+		    </div>
+		    <div class="col-md-2 center marginDown">
+		      <button type="button" id="rca" class="btn btn-warning">RCA</button>
+		    </div>
+		    <div class="col-md-2 center marginDown">
+		      <button type="button" id="hdmi" class="btn btn-info">HDMI</button>
 		    </div>
 		  </div>
 		</div>
@@ -70,27 +77,5 @@
 	      <img id="currentOSPic" src='/images/question.png'>
 	    </div>
 	  </div>
-	  <div id="myModal" class="modal fade" role="dialog">
-	  <div class="modal-dialog">
-	    <div class="modal-header">
-	      <button type="button" data-dismiss="modal" class="close closeButton">&times;</button>
-	      <h4 class="modal-title">Password Prompt</h4>
-	    </div>
-	    <div class="modal-body">
-	      <form class="form-horizontal">
-	        <div class="form-group">
-	          <label class="control-label col-sm-4" for="password">Enter Password:</label>
-	          <div class="col-sm-6">
-	            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password">
-	          </div>
-	        </div>
-	      </form>
-	    </div>
-	    <div class="modal-footer">
-	      <button type="button" id="submit" data-dismiss="modal" class="btn btn-default">Submit</button>
-	      <button type="close" data-dismiss="modal" class='btn btn-danger closeButton'>Close</button>
-	    </div>
-	  </div>
-	</div>
 	</body>
 </html>
