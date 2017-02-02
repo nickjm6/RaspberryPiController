@@ -76,9 +76,7 @@ $(document).ready(function(){
 	$("#reboot").click(function(){
 		httpAddress = address + "/reboot"
 		$.post(httpAddress, function(data){
-			if(data == "successful reboot"){
-				window.location.replace("/html/reboot.html")
-			}
+			window.location.replace("/html/reboot.html")
 		})
 		.fail(function(){
 			notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
