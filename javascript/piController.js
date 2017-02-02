@@ -64,7 +64,7 @@ $(document).ready(function(){
 		disableButtons()
 		$.post(httpAddress, function(data){
 			enableButtons()
-			notifyMessage("Finished updating! You may now perform other functions", "success")
+			notifyMessage(data, "success")
 		})
 		.fail(function(){
 			enableButtons()
@@ -87,10 +87,8 @@ $(document).ready(function(){
 
 	$("#switch").click(function(){
 		httpAddress = address + "/switchOS"
-		$.post(httpAddress, function(data){
-			if(data == "switching os"){
-				window.location.replace("/html/switch.html")
-			}
+		$.post(httpAddress, {"osName": $("#os").val()}, function(data){
+			window.location.replace("/html/switch.html")
 		})
 		.fail(function(){
 			notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
