@@ -17,8 +17,11 @@ $(document).ready(function(){
 	}
 
 	function setOS(osName){
+		$("#update").prop('disabled', false)
 		capName = osName[0].toUpperCase() + osName.substring(1)
 		currentOS = osName
+		if (osName == "rasplex")
+			$("#update").prop('disabled', true)
 		for(i in oses){
 			os = oses[i]
 			if(os != osName){
