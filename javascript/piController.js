@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	var method = undefined
 	var currentOS = undefined
-	var address = "http://192.168.2.73:9876"
+	var address = "http://192.168.2.81:9876"
 	var oses = ['kodi', 'raspbian', 'rasplex', 'retropie']
 	getOS()
 
