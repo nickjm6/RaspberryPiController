@@ -53,7 +53,7 @@ app.get("/pokemon", function(req, res){
 	res.send(result)
 })
 
-var server = app.listen(9876, function () {
+var server = app.listen(1234, function () {
 
   var host = server.address().address;
   var port = server.address().port;
