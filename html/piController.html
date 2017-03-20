@@ -3,6 +3,7 @@
 	<head>
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	  <link rel="stylesheet" type="text/css" href="/css/piController.css">
+	  <link rel="stylesheet" href="/css/main.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	  <script src="/javascript/bootstrap-notify/bootstrap-notify.min.js"></script>
@@ -27,9 +28,11 @@
 	      </ul>
 	    </div>
 	  </nav>
-	  <div class="container">
-		<div class="jumbotron">
-		  <h1 class="center">Raspberry Pi Controller</h1>
+	  <div class="container" id="header">
+		<div class="jumbotron center">
+		  <h1>Raspberry Pi Controller</h1>
+		  <h3 id="addressLabel"></h3>
+		  <button type="button" class="btn btn-info" id="changeAddress">Change Pi Address</button>
 		</div>
 	  </div>
 	  <div class="container">
@@ -40,8 +43,7 @@
 			  <p>Switch OS</p>
 			</div>
 			<div class="col-md-4">
-			  <div class="form-group">
-			    <label for="os">Select OS:</label>
+			  <div class="form-group center marginDown">
 			    <select class="form-control" id="os">
 			    </select>
 			  </div>
@@ -51,19 +53,16 @@
 		    </div>
 		  </div>
 		  <div class="row">
-		    <div class="col-md-4 center">
+		    <div class="col-md-3 center">
 		      <h3>System Commands:</h3>
 		    </div>
-		    <div class="col-md-2 center marginDown">
-		      <button type="button" id="update" class="btn btn-primary">Update</button>
-		    </div>
-		    <div class="col-md-2 center marginDown">
+		    <div class="col-md-3 center marginDown">
 		      <button type="button" id="reboot" class="btn btn-danger">Reboot</button>
 		    </div>
-		    <div class="col-md-2 center marginDown">
+		    <div class="col-md-3 center marginDown">
 		      <button type="button" id="rca" class="btn btn-warning">RCA</button>
 		    </div>
-		    <div class="col-md-2 center marginDown">
+		    <div class="col-md-3 center marginDown">
 		      <button type="button" id="hdmi" class="btn btn-info">HDMI</button>
 		    </div>
 		  </div>
@@ -71,8 +70,8 @@
 	  </div>
 	  <div class="container">
 	    <div class="center jumbotron">
-	      <h1>Current OS</h1>
-	      <h2 id="currentOS">???</h2>
+	      <h2>Current OS</h2>
+	      <h3 id="currentOS">???</h3>
 	      <break>
 	      <img id="currentOSPic" src='/images/question.png'>
 	    </div>
