@@ -9,16 +9,12 @@ var multer = require('multer');
 var bodyParser = require('body-parser');
 var stringDecoder = require("string_decoder").StringDecoder
 var sha256 = require("js-sha256")
+var piAddress = ""
 //var upload = multer();
 var count = 1;
 
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false })); // for parsing application/x-www-form-urlencoded
-
-app.get("/salute", function(req, res){
-	value = req.query
-	res.send("Hello!")
-});
 
 app.get("/count", function(req, res){
 	res.send(count.toString())
@@ -32,6 +28,21 @@ app.get("/resetCount", function(req, res){
 	resetCount()
 })
 
+app.post("/changeAddress", function(req, res){
+	newAddress = req.body.address
+	if(newAddress){
+		piAddress = newAddress
+		res.send("OK")
+	}
+	else{
+		res.status(500).send("not ok")
+	}
+})
+
+app.get("/piAddress", function(req, res){
+	res.send(piAddress)
+})
+
 function increment(){
 	count++
 }
@@ -39,11 +50,6 @@ function increment(){
 function resetCount(){
 	count = 1
 }
-
-app.post("/salute", function(req, res){
-	value = req.body
-	res.send("Hello!")
-});
 
 app.get("/pokemon", function(req, res){
 	pokeName = req.query.pokemon
