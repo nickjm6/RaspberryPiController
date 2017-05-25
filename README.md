@@ -23,6 +23,8 @@ To set up the server, change to the directory of the project and run the followi
 
 	npm install
 	sudo pm2 start Server.js
+	sudo pm2 startup
+	sudo pm2 save
 
 
 This project is really just a work in progress, something that I wanted to do in my own time to build up experience. 
