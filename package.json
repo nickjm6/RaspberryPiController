@@ -6,7 +6,8 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "child-process": "^1.0.2",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "ping": "^0.2.2"
   },
   "devDependencies": {},
   "scripts": {

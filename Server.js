@@ -3,11 +3,48 @@ var express = require('express');
 var execSync = require("child_process").execSync;
 var app = express();
 var bodyParser = require('body-parser');
+var http = require("http");
+var ping = require("ping");
 
 //set piAddress to empty string, set portNumber to 80, set count to 1
-var piAddress = ""
+var piAddress;
 var portNumber = 80
 var count = 1;
+var addresses = []
+var sig = "MyRazPi";
+
+for(var i = 2; i < 256; i++){
+	addresses.push("192.168.0." + i);
+}
+
+var formRequest = function(ip, path = ""){
+	return "http://" + ip + "/" + path;
+}
+
+var getAddr = function(){
+	return new Promise(function(resolve, reject){
+	    addresses.forEach(function(host){
+	        ping.sys.probe(host, function(isAlive){
+	            if(isAlive){
+	                http.get(formRequest(host), function(res){
+	                    let rawData = '';
+	                    res.on('data', function(d){
+	                        rawData += d
+	                    });
+	                    res.on('end', function(){
+	                        if(rawData === sig){
+	                            piAddress = host;
+	                            resolve(host);
+	                        }
+	                    })
+	                }).on("error", function(e){
+	                });
+	            }
+	        });
+	    });
+	    setTimeout(reject, 1000)
+	});
+}
 
 //set up app in current directory
 app.use(express.static(__dirname));
@@ -28,21 +65,13 @@ app.get("/resetCount", function(req, res){
 	resetCount()
 })
 
-//changes the address to a new address given that the request is valid
-app.post("/changeAddress", function(req, res){
-	newAddress = req.body.address
-	if(newAddress){
-		piAddress = newAddress
-		res.send("OK")
-	}
-	else{
-		res.status(500).send("not ok")
-	}
-})
-
 //gets the piAddress
 app.get("/piAddress", function(req, res){
-	res.send(piAddress)
+	getAddr().then(function(d){
+		res.send(d)
+	}).catch(function(e){
+		res.status(500).send("could not find raspberry pi");
+	})
 })
 
 //increments the count

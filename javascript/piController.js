@@ -1,34 +1,46 @@
 $(document).ready(function(){
 	var method = undefined
 	var currentOS = undefined
+	var piAddress;
 	var oses = ['kodi', 'raspbian', 'rasplex', 'retropie']
 	getOS()
 
-	function getAddress(callback){
-		$.get("/piAddress", function(data){
-			callback(data)
+	function getAddress(){
+		return new Promise(function(resolve, reject){
+			$.get("/piAddress", function(data){
+				piAddress = "http://" + data;
+				resolve(data)
+			}).fail(function(err){
+				reject(err);
+			})
 		})
 	}
 
-	function getOS(){
-		getAddress(function(piAddress){
-			if(piAddress == ""){
-				window.location.replace("/html/changeAddress.html")
-			}
-			else{
-				ipAndPort = piAddress.split("//")[1]
-				$("#addressLabel").text(ipAndPort)
-				httpAddress = piAddress + "/currentOS"
-				$.get(httpAddress, function(data){
-					if(data == "kodi" || data == "raspbian" || data == "rasplex" || data == "retropie")
-						setOS(data)
-				})
-				.fail(function(){
-					window.location.replace("/html/serverDown.html");
-				})
-			}
+	var getReq = function(path){
+		return new Promise(function(resolve, reject){
+			$.get(piAddress + path, function(data){
+				resolve(data)
+			}).fail(function(err){
+				reject(err);
+			})
 		})
 	}
+
+	var postReq = function(path, params = {}){
+		return new Promise(function(resolve, reject){
+			$.post(piAddress + path, params, function(data){
+				resolve(data)
+			}).fail(function(err){
+				reject(err)
+			})
+		})
+	}
+
+	getAddress().then(function(data){
+		getOS();
+	}).catch(function(err){
+		alert(err)
+	})
 
 	function setOS(osName){
 		capName = osName[0].toUpperCase() + osName.substring(1)
@@ -59,42 +71,73 @@ $(document).ready(function(){
 		$("#hdmi").prop("disabled", false)
 	}
 
-	function notifyMessage(messageVal, typeVal){
-		$.notifyClose()
-		$.notify(
-			{message: messageVal},
-    		{
-        		delay: 10000,
-        		placement: {
-					from: "top",
-					align: "center"
-        		},
-        		type: typeVal
-    		}
-    	);
+	function getOS(){
+		if(piAddress){
+			getReq("/currentOS").then(function(data){
+				if(data == "kodi" || data == "raspbian" || data == "rasplex" || data == "retropie")
+					setOS(data)
+			}).catch(function(e){
+				getAddress().then(function(){
+					getOS();
+				}).catch(function(){
+					window.location.replace("/html/serverDown.html");
+				})
+			})
+		} else{
+			getAddress().then(function(){
+				getOS();
+			}).catch(function(err){
+				notifyMessage("could not find raspberry pi", "danger");
+			})
+		}
 	}
+
+	var reboot = function(){
+		if(piAddress){
+			postReq("/reboot").then(function(data){
+				window.location.replace("/html/reboot.html");
+			}).catch(function(e){
+				getAddress.then(function(){
+					reboot();
+				}).catch(function(e){
+					window.location.replace("/html/serverDown.html")
+				})
+			})
+		} else{
+			getAddress.then(function(){
+				reboot();
+			}).catch(function(e){
+				window.location.replace("/html/serverDown.html")
+			})
+		}
+	}
+
+	var switchOS = function(){
+		if(piAddress){
+			postReq("/switchOS", {osName: $("#os").val()}).then(function(data){
+				window.location.replace("/html/switch.html")
+			}).catch(function(err){
+				getAddress().then(function(data){
+					switchOS()
+				}).catch(function(err){
+					window.location.replace("/html/serverDown.html");
+				})
+			})
+		} else{
+			getAddress().then(function(data){
+				switchOS()
+			}).catch(function(err){
+				window.location.replace("/html/serverDown.html")
+			})
+		}
+	}
+
 	$("#reboot").click(function(){
-		getAddress(function(piAddress){
-			httpAddress = piAddress + "/reboot"
-			$.post(httpAddress, function(data){
-				window.location.replace("/html/reboot.html")
-			})
-			.fail(function(){
-				notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
-			})
-		})
+		reboot();
 	})
 
 	$("#switch").click(function(){
-		getAddress(function(piAddress){
-			httpAddress = piAddress + "/switchOS"
-			$.post(httpAddress, {"osName": $("#os").val()}, function(data){
-				window.location.replace("/html/switch.html")
-			})
-			.fail(function(){
-				notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
-			})
-		})
+		switchOS()
 	})
 
 	$("#rca").click(function(){
@@ -104,7 +147,6 @@ $(document).ready(function(){
 				window.location.replace("/html/reboot.html")
 			})
 			.fail(function(){
-				notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
 			})
 		})
 	})
@@ -116,13 +158,8 @@ $(document).ready(function(){
 				window.location.replace("/html/reboot.html")
 			})
 			.fail(function(){
-				notifyMessage("Error connecting to server. Try refreshing page, or just try again", "danger")
 			})
 		})
-	})
-
-	$("#changeAddress").click(function(){
-		window.location.replace("/html/changeAddress.html")
 	})
 });
 
