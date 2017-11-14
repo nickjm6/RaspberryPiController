@@ -1,166 +1,89 @@
 $(document).ready(function(){
 	var method = undefined
-	var currentOS = undefined
-	var piAddress;
-	var oses = ['kodi', 'raspbian', 'rasplex', 'retropie']
-	getOS()
+	var oses = ["...", 'Kodi', 'Raspbian', 'Rasplex', 'Retropie']
 
-	function getAddress(){
-		return new Promise(function(resolve, reject){
-			$.get("/piAddress", function(data){
-				piAddress = "http://" + data;
-				resolve(data)
-			}).fail(function(err){
-				reject(err);
-			})
-		})
+	function arrayRemove(arr, item){
+		var newArr = [];
+		for(i in arr){
+			if(arr[i] != item)
+				newArr.push(arr[i])
+		}
+		return newArr;
 	}
 
-	var getReq = function(path){
-		return new Promise(function(resolve, reject){
-			$.get(piAddress + path, function(data){
-				resolve(data)
-			}).fail(function(err){
-				reject(err);
-			})
-		})
+	var vm = {
+		currentOS: ko.observable("???"),
+		piAddress: ko.observable(),
+		selectedOS: ko.observable(),
+		osList: ko.observableArray(oses),
+		picName: ko.observable("/images/question.png")
 	}
 
-	var postReq = function(path, params = {}){
-		return new Promise(function(resolve, reject){
-			$.post(piAddress + path, params, function(data){
-				resolve(data)
-			}).fail(function(err){
-				reject(err)
-			})
-		})
-	}
-
-	getAddress().then(function(data){
-		getOS();
-	}).catch(function(err){
-		alert(err)
+	vm.currentOS.subscribe(function(data){
+		vm.osList(arrayRemove(oses, data))
+		var lowerOS = data.toLowerCase();
+		vm.picName("/images/" + lowerOS + ".png");
 	})
 
-	function setOS(osName){
-		capName = osName[0].toUpperCase() + osName.substring(1)
-		currentOS = osName
-		for(i in oses){
-			os = oses[i]
-			if(os != osName){
-				option = $("<option>" + os[0].toUpperCase() + os.substring(1) + "</option>")
-				$("#os").append(option)
-			}
-		}
-		$("#currentOS").text(capName)
-		picName = "/images/" + osName + ".png"
-		$("#currentOSPic").attr("src", picName)
-	}
+	$.get("/piAddress", function(data){
+		vm.piAddress(data);
+	}).fail(function(){
+		vm.piAddress("PI Unavailable")
+	})
 
-	function disableButtons(){
-		$("#reboot").prop("disabled", true)
-		$("#switch").prop("disabled", true)
-		$("#rca").prop("disabled", true)
-		$("#hdmi").prop("disabled", true)
-	}
-
-	function enableButtons(){
-		$("#reboot").prop("disabled", false)
-		$("#switch").prop("disabled", false)
-		$("#rca").prop("disabled", false)
-		$("#hdmi").prop("disabled", false)
-	}
-
-	function getOS(){
-		if(piAddress){
-			getReq("/currentOS").then(function(data){
-				if(data == "kodi" || data == "raspbian" || data == "rasplex" || data == "retropie")
-					setOS(data)
-			}).catch(function(e){
-				getAddress().then(function(){
-					getOS();
-				}).catch(function(){
-					window.location.replace("/html/serverDown.html");
-				})
-			})
-		} else{
-			getAddress().then(function(){
-				getOS();
-			}).catch(function(err){
-				notifyMessage("could not find raspberry pi", "danger");
-			})
-		}
-	}
-
-	var reboot = function(){
-		if(piAddress){
-			postReq("/reboot").then(function(data){
-				window.location.replace("/html/reboot.html");
-			}).catch(function(e){
-				getAddress.then(function(){
-					reboot();
-				}).catch(function(e){
-					window.location.replace("/html/serverDown.html")
-				})
-			})
-		} else{
-			getAddress.then(function(){
-				reboot();
-			}).catch(function(e){
-				window.location.replace("/html/serverDown.html")
-			})
-		}
-	}
-
-	var switchOS = function(){
-		if(piAddress){
-			postReq("/switchOS", {osName: $("#os").val()}).then(function(data){
-				window.location.replace("/html/switch.html")
-			}).catch(function(err){
-				getAddress().then(function(data){
-					switchOS()
-				}).catch(function(err){
-					window.location.replace("/html/serverDown.html");
-				})
-			})
-		} else{
-			getAddress().then(function(data){
-				switchOS()
-			}).catch(function(err){
-				window.location.replace("/html/serverDown.html")
-			})
-		}
-	}
+	$.get("/currentOS", function(data){
+		var capName = data[0].toUpperCase() + data.substring(1);
+		vm.currentOS(capName);
+	})
 
 	$("#reboot").click(function(){
-		reboot();
+		$.post("/reboot", function(data){
+			alert(data)
+		}).fail(function(err){
+			alert(err.statusText)
+		})
 	})
 
 	$("#switch").click(function(){
-		switchOS()
+		if(vm.selectedOS() === "..."){
+			alert("please select an OS to switch to")
+		} else{
+			$.post("/switchOS", {osName: vm.selectedOS()}, function(data){
+				alert(data)
+			}).fail(function(err){
+				alert(err.statusText)
+			})
+		}
 	})
 
 	$("#rca").click(function(){
-		getAddress(function(piAddress){
-			httpAddress = piAddress + "/rca"
-			$.post(httpAddress, function(data){
-				window.location.replace("/html/reboot.html")
-			})
-			.fail(function(){
-			})
+		$.post("/rca", function(data){
+			alert(data)
+		}).fail(function(err){
+			alert(err.statusText)
+		})
+	})
+	
+	$("#hdmi").click(function(){
+		$.post("/hdmi", function(data){
+			alert(data)
+		}).fail(function(err){
+			alert(err)
 		})
 	})
 
-	$("#hdmi").click(function(){
-		getAddress(function(piAddress){
-			httpAddress = piAddress + "/hdmi"
-			$.post(httpAddress, function(data){
-				window.location.replace("/html/reboot.html")
-			})
-			.fail(function(){
-			})
-		})
-	})
+	// $("#hdmi").click(function(){
+	// 	getAddress(function(piAddress){
+	// 		httpAddress = piAddress + "/hdmi"
+	// 		$.post(httpAddress, function(data){
+	// 			window.location.replace("/html/reboot.html")
+	// 		})
+	// 		.fail(function(){
+	// 		})
+	// 	})
+	// })
+
+	ko.applyBindings(vm);
 });
 
 

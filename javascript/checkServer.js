@@ -14,8 +14,4 @@ $(document).ready(function(){
 	$("#tryAgain").click(function(){
 		window.location.reload()
 	})
-
-	$("#changeAddress").click(function(){
-		window.location.replace("/html/changeAddress.html")
-	})
 })

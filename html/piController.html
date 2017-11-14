@@ -6,6 +6,7 @@
 	  <link rel="stylesheet" href="/css/main.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	  <script type='text/javascript' src='/javascript/knockout.js'></script>
 	  <script src="/javascript/piController.js"></script>
 	  <link rel="icon" type="image/png" href="/images/raspbian.png" />
 	  <meta charset="utf-8">
@@ -28,8 +29,7 @@
 	  <div class="container" id="header">
 		<div class="jumbotron center">
 		  <h1>Raspberry Pi Controller</h1>
-		  <h3 id="addressLabel"></h3>
-		  <button type="button" class="btn btn-info" id="changeAddress">Change Pi Address</button>
+		  <h3 data-bind="text: piAddress"></h3>
 		</div>
 	  </div>
 	  <div class="container">
@@ -41,7 +41,7 @@
 			</div>
 			<div class="col-md-4">
 			  <div class="form-group center marginDown">
-			    <select class="form-control" id="os">
+			    <select class="form-control" data-bind="options: osList, value: selectedOS">
 			    </select>
 			  </div>
 		    </div>
@@ -68,9 +68,9 @@
 	  <div class="container">
 	    <div class="center jumbotron">
 	      <h2>Current OS</h2>
-	      <h3 id="currentOS">???</h3>
+	      <h3 data-bind="text: currentOS"></h3>
 	      <break>
-	      <img id="currentOSPic" src='/images/question.png'>
+	      <img id="currentOSPic" data-bind="attr: {src: picName}">
 	    </div>
 	  </div>
 	</body>
