@@ -11,19 +11,69 @@ $(document).ready(function(){
 		return newArr;
 	}
 
+	function addAlert(msg, type){
+		removeAlerts();
+		var newAlert = $("<div class='alert fade in'>" + msg + "</div>");
+		newAlert.addClass("alert-" + type);
+		$("#alertDiv").append(newAlert);
+	}
+
+	function removeAlerts(){
+		$(".alert").remove();
+	}
+
+	function disableButtons(){
+		$("#reboot").attr("disabled", true);
+		$("#switch").attr("disabled", true);
+		$("#rca").attr("disabled", true);
+		$("#hdmi").attr("disabled", true);
+	}
+
+	function enableButtons(){
+		$("#reboot").attr("disabled", false);
+		$("#switch").attr("disabled", false);
+		$("#rca").attr("disabled", false);
+		$("#hdmi").attr("disabled", false);
+	}
+
 	var vm = {
 		currentOS: ko.observable("???"),
 		piAddress: ko.observable(),
 		selectedOS: ko.observable(),
 		osList: ko.observableArray(oses),
-		picName: ko.observable("/images/question.png")
+		picName: ko.observable("/images/question.png"),
 	}
 
 	vm.currentOS.subscribe(function(data){
 		vm.osList(arrayRemove(oses, data))
-		var lowerOS = data.toLowerCase();
-		vm.picName("/images/" + lowerOS + ".png");
+		if(data === "???"){
+			vm.picName("/images/question.png")
+		}
+		else{
+			var lowerOS = data.toLowerCase();
+			vm.picName("/images/" + lowerOS + ".png");
+			enableButtons()
+		}
 	})
+
+	var getReq = function(path){
+		$.get(path, function(data){
+			addAlert(data, "success")
+		}).fail(function(err){
+			addAlert(err.statusText, "danger")
+		})
+	}
+
+	var postReq = function(path, params={}){
+		disableButtons();
+		$.post(path, params, function(data){
+			enableButtons();
+			addAlert(data, "success");
+		}).fail(function(err){
+			enableButtons();
+			addAlert(err.statusText, "danger");
+		})
+	}
 
 	$.get("/piAddress", function(data){
 		vm.piAddress(data);
@@ -34,56 +84,37 @@ $(document).ready(function(){
 	$.get("/currentOS", function(data){
 		var capName = data[0].toUpperCase() + data.substring(1);
 		vm.currentOS(capName);
+	}).fail(function(err){
+		addAlert(err.statusText, "danger")
+		vm.currentOS("???");
 	})
 
 	$("#reboot").click(function(){
-		$.post("/reboot", function(data){
-			alert(data)
-		}).fail(function(err){
-			alert(err.statusText)
-		})
+		postReq("/reboot")
 	})
 
 	$("#switch").click(function(){
 		if(vm.selectedOS() === "..."){
-			alert("please select an OS to switch to")
+			addAlert("please select an OS to switch to", "danger")
 		} else{
-			$.post("/switchOS", {osName: vm.selectedOS()}, function(data){
-				alert(data)
-			}).fail(function(err){
-				alert(err.statusText)
-			})
+			postReq("/switchOS", {osName: vm.selectedOS()});
 		}
 	})
 
 	$("#rca").click(function(){
-		$.post("/rca", function(data){
-			alert(data)
-		}).fail(function(err){
-			alert(err.statusText)
-		})
+		postReq("/rca");
 	})
 	
 	$("#hdmi").click(function(){
-		$.post("/hdmi", function(data){
-			alert(data)
-		}).fail(function(err){
-			alert(err)
-		})
+		postReq("/hdmi")
 	})
 
-	// $("#hdmi").click(function(){
-	// 	getAddress(function(piAddress){
-	// 		httpAddress = piAddress + "/hdmi"
-	// 		$.post(httpAddress, function(data){
-	// 			window.location.replace("/html/reboot.html")
-	// 		})
-	// 		.fail(function(){
-	// 		})
-	// 	})
-	// })
+	$(document).click(function(){
+		removeAlerts();
+	})
 
 	ko.applyBindings(vm);
+	disableButtons()
 });
 
 

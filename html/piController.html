@@ -2,8 +2,8 @@
 <html lang="en">
 	<head>
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	  <link rel="stylesheet" type="text/css" href="/css/piController.css">
 	  <link rel="stylesheet" href="/css/main.css">
+	  <link rel="stylesheet" type="text/css" href="/css/piController.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	  <script type='text/javascript' src='/javascript/knockout.js'></script>
@@ -26,10 +26,14 @@
 	      </ul>
 	    </div>
 	  </nav>
+	  <div id="alertDiv"></div>
 	  <div class="container" id="header">
 		<div class="jumbotron center">
 		  <h1>Raspberry Pi Controller</h1>
-		  <h3 data-bind="text: piAddress"></h3>
+		  <h3 id="addressLabel" data-bind="text: piAddress"></h3>
+	      <h3 id="osLabel" data-bind="text: currentOS"></h3>
+	      <break>
+	      <img id="currentOSPic" data-bind="attr: {src: picName}">
 		</div>
 	  </div>
 	  <div class="container">
@@ -64,14 +68,6 @@
 		    </div>
 		  </div>
 		</div>
-	  </div>
-	  <div class="container">
-	    <div class="center jumbotron">
-	      <h2>Current OS</h2>
-	      <h3 data-bind="text: currentOS"></h3>
-	      <break>
-	      <img id="currentOSPic" data-bind="attr: {src: picName}">
-	    </div>
 	  </div>
 	</body>
 </html>
