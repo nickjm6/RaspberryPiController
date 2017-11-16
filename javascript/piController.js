@@ -2,6 +2,14 @@ $(document).ready(function(){
 	var method = undefined
 	var oses = ["...", 'Kodi', 'Raspbian', 'Rasplex', 'Retropie']
 
+	var attemptCount = 0;
+
+	function delay(d){
+		return new Promise(function(resolve, reject){
+			setTimeout(resolve, d)
+		})
+	}
+
 	function arrayRemove(arr, item){
 		var newArr = [];
 		for(i in arr){
@@ -53,6 +61,7 @@ $(document).ready(function(){
 			var lowerOS = data.toLowerCase();
 			vm.picName("/images/" + lowerOS + ".png");
 			enableButtons()
+			$("body").mLoading("hide")
 		}
 	})
 
@@ -64,15 +73,47 @@ $(document).ready(function(){
 		})
 	}
 
-	var postReq = function(path, params={}){
+	var postReq = function(path, message, params={}){
 		disableButtons();
+		$("body").mLoading({
+			text: message
+		})
 		$.post(path, params, function(data){
 			enableButtons();
-			addAlert(data, "success");
+			vm.piAddress("PI Unavailable")
+			vm.currentOS("???")
+			delay(10000).then(function(){
+				attemptCount = 0;
+				recursiveLoad();
+			}).catch(function(){})
 		}).fail(function(err){
 			enableButtons();
+			$("body").mLoading("hide");
 			addAlert(err.statusText, "danger");
 		})
+	}
+
+	function getAddress(){
+		return new Promise(function(resolve, reject){
+			$.get("/piAddress", function(data){
+				vm.piAddress(data);
+				$.get("/currentOS", function(data1){
+					var capName = data1[0].toUpperCase() + data1.substring(1);
+					vm.currentOS(capName);
+					resolve();
+				}).fail(function(err){
+					vm.currentOS("???")
+					vm.piAddress("PI Unavailable");
+					disableButtons();
+					reject()
+				})
+			}).fail(function(err){
+				vm.piAddress("PI Unavailable")
+				vm.currentOS("???");
+				disableButtons();
+				reject();
+			})
+		});
 	}
 
 	$.get("/piAddress", function(data){
@@ -90,23 +131,23 @@ $(document).ready(function(){
 	})
 
 	$("#reboot").click(function(){
-		postReq("/reboot")
+		postReq("/reboot", "rebooting, please wait...")
 	})
 
 	$("#switch").click(function(){
 		if(vm.selectedOS() === "..."){
 			addAlert("please select an OS to switch to", "danger")
 		} else{
-			postReq("/switchOS", {osName: vm.selectedOS()});
+			postReq("/switchOS", 'Switching to ' + vm.selectedOS() + "...", {osName: vm.selectedOS()});
 		}
 	})
 
 	$("#rca").click(function(){
-		postReq("/rca");
+		postReq("/rca", "Switching to RCA Display");
 	})
 	
 	$("#hdmi").click(function(){
-		postReq("/hdmi")
+		postReq("/hdmi", "Switching to HDMI Display")
 	})
 
 	$(document).click(function(){
@@ -115,6 +156,32 @@ $(document).ready(function(){
 
 	ko.applyBindings(vm);
 	disableButtons()
+	$("body").mLoading({
+		text: "Finding Pi Address..."
+	})
+
+	function recursiveLoad(){
+		if(attemptCount > 10){
+			addAlert("Could not find Raspberry Pi", "danger")
+			attemptCount = 0;
+			$("body").mLoading("hide")
+		}
+		getAddress().then(function(){
+			$("body").mLoading("hide")
+			addAlert("Success!", "success");
+		}).catch(function(){
+			delay(3000).then(function(){
+				attemptCount += 1;
+				recursiveLoad();
+			}).catch(function(){})
+		})
+	}
+
+	getAddress().then(function(data){
+	}).catch(function(err){
+		addAlert(err.statusText, "danger");
+		$("body").mLoading("hide")
+	});
 });
 
 

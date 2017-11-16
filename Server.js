@@ -93,7 +93,7 @@ var getAddr = function(){
 	            }
 	        });
 	    });
-	    setTimeout(reject, 1000)
+	    setTimeout(reject, 2500)
 	});
 }
 
@@ -197,10 +197,14 @@ app.get("/pokemon", function(req, res){
 getAddr().then(function(){
 	//sets up server on localhost with port corresponding to portNumber
 	var server = app.listen(portNumber, function () {
-  		var port = server.address().port;
-  		console.log('Media Server running at http://localhost:%s', port);
+  		console.log("Server started");
 	});
 
-});
+}).catch(function(){
+	console.log("Could not find pi Address, but will start server anyways")
+	var server = app.listen(portNumber, function(){
+		console.log("Server started")
+	})
+})
 
 
