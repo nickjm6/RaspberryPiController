@@ -42,19 +42,31 @@ var httpPost = function(path, args){
 		var request = formPost(path, params);
 
 		var req = http.request(request, function(res){
+			var statusCode = res.statusCode
 			let data = "";
 			res.on("data", function(d){
 				data += d;
 			})
 			res.on("end", function(){
-				resolve(data)
+				var err = {
+					err: data,
+					status: statusCode
+				};
+				if(statusCode == 200)
+					resolve(data)
+				else
+					reject(err)
 			})
 		})
-		req.on("error", function(e){
+		req.on("error", function(err){
 			getAddr().then(function(){
-				reject("Pi Address was wrong, but I just recieved it again. Please try request again")
+				reject("Pi Address was wrong, but I just recieved it again. Please try request again", 503)
 			}).catch(function(e){
-				reject(e)
+				var err = {
+					err: e.message,
+					status: parseInt(req.statusCode)
+				};
+				reject(err);
 			});
 		})
 		req.write(params)
@@ -64,7 +76,9 @@ var httpPost = function(path, args){
 
 var httpGet = function(path){
 	return new Promise(function(resolve, reject){
+		var statusCode;
 		http.get(path, function(res){
+			statusCode = res.statusCode
 			let rawData = "";
 			res.on("data", function(d){
 				rawData += d;
@@ -73,7 +87,11 @@ var httpGet = function(path){
 				resolve(rawData)
 			})
 		}).on("error", function(e){
-			reject(e)
+			var err = {
+				err: e.message, 
+				status: parseInt(statusCode)
+			};
+			reject(err);
 		})
 	})
 }
@@ -105,8 +123,8 @@ app.use(bodyParser.urlencoded({ extended: false })); // for parsing application/
 app.get("/piAddress", function(req, res){
 	getAddr().then(function(d){
 		res.send(d)
-	}).catch(function(e){
-		res.status(500).send("could not find raspberry pi");
+	}).catch(function(){
+		res.status(503).send("could not find raspberry pi");
 	})
 })
 
@@ -114,11 +132,7 @@ app.get("/currentOS", function(req, res){
 	httpGet(formRequest(piAddress, "currentOS")).then(function(data){
 		res.send(data);
 	}).catch(function(e){
-		getAddr().then(function(){
-			res.status(500).send("Pi Address was incorrect, but was just re-recieved. Please retry again")
-		}).catch(function(e){
-			res.status(500).send("Pi could not be found")
-		})
+		res.status(e.status).send(e.err);
 	})
 })
 
@@ -126,11 +140,7 @@ app.get("/getVol", function(req, res){
 	httpGet(formRequest(piAddress, "getVol")).then(function(data){
 		res.send(data);
 	}).catch(function(e){
-		getAddr().then(function(){
-			res.status(500).send("Pi Address was incorrect, but was just re-recieved. Please retry again")
-		}).catch(function(e){
-			res.status(500).send("Pi Could not be found")
-		})
+		res.status(e.status).send(e.err);
 	})
 })
 
@@ -138,7 +148,7 @@ app.post("/reboot", function(req, res){
 	httpPost("/reboot").then(function(data){
 		res.send(data)
 	}).catch(function(e){
-		res.status(500).send(e);
+		res.status(e.status).send(e.err)
 	})
 });
 
@@ -148,23 +158,23 @@ app.post("/switchOS", function(req, res){
 	httpPost("/switchOS", {osName: osName}).then(function(data){
 		res.send(data);
 	}).catch(function(e){
-		res.status(500).send(e);
+		res.status(e.status).send(e.err);
 	})
-})
+});
 
 app.post("/rca", function(req, res){
 	httpPost("/rca").then(function(data){
 		res.send(data);
 	}).catch(function(e){
-		res.status(500).send(e);
+		res.status(e.status).send(e.err);
 	})
 })
 
 app.post("/hdmi", function(req, res){
 	httpPost("/hdmi").then(function(data){
 		res.send(data);
-	}).catch(function(e){
-		res.status(500).send(e);
+	}).catch(function(e){;
+		res.status(e.status).send(e.err);
 	})
 })
 
@@ -172,7 +182,7 @@ app.post("/volumeUp", function(req, res){
 	httpPost("/volumeUp").then(function(data){
 		res.send(data);
 	}).catch(function(e){
-		res.status(500).send(e);
+		res.status(e.status).send(e.err);
 	})
 });
 
@@ -180,7 +190,7 @@ app.post("/volumeDown", function(req, res){
 	httpPost("/volumeDown").then(function(data){
 		res.send(data);
 	}).catch(function(e){
-		res.status(500).send(e);
+		res.status(e.status).send(e.err);
 	})
 })
 

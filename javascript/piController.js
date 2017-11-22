@@ -69,7 +69,7 @@ $(document).ready(function(){
 		$.get(path, function(data){
 			addAlert(data, "success")
 		}).fail(function(err){
-			addAlert(err.statusText, "danger")
+			addAlert(err.responseText, "danger")
 		})
 	}
 
@@ -89,7 +89,7 @@ $(document).ready(function(){
 		}).fail(function(err){
 			enableButtons();
 			$("body").mLoading("hide");
-			addAlert(err.statusText, "danger");
+			addAlert(err.responseText, "danger");
 		})
 	}
 
