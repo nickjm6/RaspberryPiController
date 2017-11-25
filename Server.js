@@ -200,53 +200,79 @@ app.get("/pokemon", function(res, res){
 })
 
 app.post("/reboot", function(req, res){
-	httpPost("/reboot").then(function(data){
-		res.send(data)
-	}).catch(function(e){
-		res.status(e.status).send(e.err)
-	})
+	if(req.isAuthenticated()){
+		httpPost("/reboot").then(function(data){
+			res.send(data)
+		}).catch(function(e){
+			res.status(e.status).send(e.err)
+		})
+	} else{
+		res.status(403).send("You are not a valid user. Please log in as a valid user")
+	}
+	
 });
 
 app.post("/switchOS", function(req, res){
-	res.setHeader('Access-Control-Allow-Origin','*');
-	osName = req.body.osName
-	httpPost("/switchOS", {osName: osName}).then(function(data){
-		res.send(data);
-	}).catch(function(e){
-		res.status(e.status).send(e.err);
-	})
+	if(req.isAuthenticated()){
+		res.setHeader('Access-Control-Allow-Origin','*');
+		osName = req.body.osName
+		httpPost("/switchOS", {osName: osName}).then(function(data){
+			res.send(data);
+		}).catch(function(e){
+			res.status(e.status).send(e.err);
+		})
+	} else{
+		res.status(403).send("You are not a valid user. Please log in as a valid user")
+	}
 });
 
 app.post("/rca", function(req, res){
-	httpPost("/rca").then(function(data){
-		res.send(data);
-	}).catch(function(e){
-		res.status(e.status).send(e.err);
-	})
+	if(req.isAuthenticated()){
+		httpPost("/rca").then(function(data){
+			res.send(data);
+		}).catch(function(e){
+			res.status(e.status).send(e.err);
+		})
+	} else{
+		res.status(403).send("You are not a valid user. Please log in as a valid user");
+	}
 })
 
 app.post("/hdmi", function(req, res){
-	httpPost("/hdmi").then(function(data){
-		res.send(data);
-	}).catch(function(e){;
-		res.status(e.status).send(e.err);
-	})
+	if(req.isAuthenticated()){
+		httpPost("/hdmi").then(function(data){
+			res.send(data);
+		}).catch(function(e){;
+			res.status(e.status).send(e.err);
+		})
+	} else{
+		res.status(403).send("You are not a valid user. Please log in as a valid user");
+	}
 })
 
 app.post("/volumeUp", function(req, res){
-	httpPost("/volumeUp").then(function(data){
-		res.send(data);
-	}).catch(function(e){
-		res.status(e.status).send(e.err);
-	})
+	if(req.isAuthenticated()){
+		httpPost("/volumeUp").then(function(data){
+			res.send(data);
+		}).catch(function(e){
+			res.status(e.status).send(e.err);
+		})
+	} else{
+		res.status(403).send("You are not a valid user. Please log in as a valid user");
+	}
 });
 
 app.post("/volumeDown", function(req, res){
-	httpPost("/volumeDown").then(function(data){
-		res.send(data);
-	}).catch(function(e){
-		res.status(e.status).send(e.err);
-	})
+	if(req.isAuthenticated()){
+		httpPost("/volumeDown").then(function(data){
+			res.send(data);
+		}).catch(function(e){
+			res.status(e.status).send(e.err);
+		})
+	} else{
+		res.status(403).send("You are not a valid user. Please log in as a valid user");
+	}
+	
 })
 
 
