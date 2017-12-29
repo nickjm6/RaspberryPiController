@@ -19,6 +19,7 @@ var piAddress;
 var portNumber = 80
 var addresses = []
 var sig = "MyRazPi";
+var serverSig = "RazPiServer"
 var mongoDB = "mongodb://localhost/test"
 
 mongoose.connect(mongoDB, {
@@ -144,6 +145,7 @@ var createUser = function(username, password){
 		}
 	})
 }
+
 //set up app in current directory
 app.use(express.static(__dirname));
 app.use(cookieParser());
@@ -177,6 +179,10 @@ app.get("/getVol", function(req, res){
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
 	})
+})
+
+app.get("/piServer", function(req, res){
+	res.send(serverSig);
 })
 
 app.get("/", function(req, res){
@@ -275,6 +281,14 @@ app.post("/volumeDown", function(req, res){
 	
 })
 
+app.get('/auth/googleMobile', function(req, res, next) {
+    passport.authenticate('google', { session: false, scope: ['profile', 'email'] }, function(err, user, info) {
+        if(err) {return next(err);}
+        req.user = user;
+        return next();
+    })(req, res, next);
+});
+
 
 //queries a pokemon
 app.get("/pokemon", function(req, res){
@@ -295,10 +309,9 @@ app.get("/auth/google", passport.authenticate("google", {
 }));
 
 app.get("/auth/google/callback",
-	passport.authenticate("google", {
-		successRedirect: "/piController",
-		failuteRedirect: "/"
-}))
+	passport.authenticate("google"), function(req, res){
+		res.send(req.user);
+	});
 
 function isLoggedIn(req, res, next){
 	if(req.isAuthenticated())
