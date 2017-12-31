@@ -235,7 +235,7 @@ app.post("/switchOS", function(req, res){
 	}
 });
 
-app.post("/swithOS-token", passport.authenticate("google-id-token"), function(req, res){
+app.post("/switchOS-token", passport.authenticate("google-id-token"), function(req, res){
 	res.setHeader("Access-Control-Allow-Origin", "*");
 	osName = req.body.osName
 	httpPost("/switchOS", {osName: osName}).then(function(data){
