@@ -1,4 +1,5 @@
 var GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
+var GoogleTokenStrategy = require("passport-google-id-token")
 
 var User = require("./user")
 var config = require("./config")
@@ -45,4 +46,20 @@ module.exports = function(passport){
 			})
 		})
 	}))
+
+	passport.use(new GoogleTokenStrategy({
+		clientID: config.clientID
+	}, function(parsedToken, googleId, done){
+		console.log("about to search id")
+		console.log("id: " + googleId)
+		User.findOne({"google.id" : googleId}, function(err, user){
+			if (err)
+				return done(err);
+			if(user){
+				return done(null, user);
+			} else{
+				return done("Not a valid User");
+			}
+		})
+	})); 
 }
