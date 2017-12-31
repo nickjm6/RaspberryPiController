@@ -349,13 +349,6 @@ app.post("/auth/google", passport.authenticate("google-id-token"), function(req,
 	res.send(req.user)
 });
 
-app.post("/validateLogin", function(req, res){
-	if(req.isAuthenticated())
-		res.send("You are currently logged in");
-	else
-		res.send("You are not logged in");
-})
-
 app.get("/auth/google/callback",
 	passport.authenticate("google", {
 		successRedirect: "/piController",
