@@ -196,7 +196,7 @@ app.get("/piController", function(req, res){
 	}
 })
 
-app.get("/pokemon", function(res, res){
+app.get("/pokemon", function(req, res){
 	res.sendFile(__dirname + "/html/pokemon.html")
 })
 
@@ -213,6 +213,14 @@ app.post("/reboot", function(req, res){
 	
 });
 
+app.post("/reboot-token", passport.authenticate("google-id-token"), function(req, res){
+	httpPost("/reboot").then(function(data){
+		res.send(data);
+	}).catch(function(e){
+		res.status(e.status).send(e.err);
+	})
+});
+
 app.post("/switchOS", function(req, res){
 	if(req.isAuthenticated()){
 		res.setHeader('Access-Control-Allow-Origin','*');
@@ -227,6 +235,16 @@ app.post("/switchOS", function(req, res){
 	}
 });
 
+app.post("/swithOS-token", passport.authenticate("google-id-token"), function(req, res){
+	res.setHeader("Access-Control-Allow-Origin", "*");
+	osName = req.body.osName
+	httpPost("/switchOS", {osName: osName}).then(function(data){
+		res.send(data);
+	}).catch(function(e){
+		res.status(e.status).send(e.err);
+	})
+});
+
 app.post("/rca", function(req, res){
 	if(req.isAuthenticated()){
 		httpPost("/rca").then(function(data){
@@ -238,6 +256,14 @@ app.post("/rca", function(req, res){
 		res.status(403).send("You are not a valid user. Please log in as a valid user");
 	}
 })
+
+app.post("/rca-token", passport.authenticate("google-id-token"), function(req, res){
+	httpPost("/rca").then(function(data){
+		res.send(data);
+	}).catch(function(e){
+		res.status(e.status).send(e.err);
+	})
+});
 
 app.post("/hdmi", function(req, res){
 	if(req.isAuthenticated()){
@@ -251,6 +277,14 @@ app.post("/hdmi", function(req, res){
 	}
 })
 
+app.post("/hdmi-token", passport.authenticate("google-id-token"), function(req, res){
+	httpPost("/hdmi").then(function(data){
+		res.send(data);
+	}).catch(function(e){
+		res.status(e.status).send(e.err);
+	})
+});
+
 app.post("/volumeUp", function(req, res){
 	if(req.isAuthenticated()){
 		httpPost("/volumeUp").then(function(data){
@@ -261,6 +295,14 @@ app.post("/volumeUp", function(req, res){
 	} else{
 		res.status(403).send("You are not a valid user. Please log in as a valid user");
 	}
+});
+
+app.post("/volumeup-token", passport.authenticate("google-id-token"), function(req, res){
+	httpPost("/volumeup").then(function(data){
+		res.send(data);
+	}).catch(function(e){
+		res.status(e.status).send(e.err);
+	})
 });
 
 app.post("/volumeDown", function(req, res){
@@ -275,6 +317,15 @@ app.post("/volumeDown", function(req, res){
 	}
 	
 })
+
+app.post("/volumedown-token", passport.authenticate("google-id-token"), function(req, res){
+	httpPost("/volumedown").then(function(data){
+		res.send(data);
+	}).catch(function(e){
+		res.status(e.status).send(e.err);
+	})
+});
+
 
 //queries a pokemon
 app.get("/pokemon", function(req, res){
