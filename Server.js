@@ -100,7 +100,12 @@ var httpGet = function(path){
 				rawData += d;
 			});
 			res.on("end", function(){
-				resolve(rawData)
+				try{
+					resolve(rawData)
+				}catch (e){
+					resolve(rawData)
+				}
+				
 			})
 		}).on("error", function(e){
 			var err = {
@@ -180,13 +185,21 @@ app.get("/getVol", function(req, res){
 	})
 })
 
-app.get("/osAndVolume", function(req, res){
-	httpGet(formRequest(piAddress, "osAndVolume")).then(function(data){
-		res.send(data);
-	}).catch(function(e){
-		res.status(e.status).send(e.err);
+app.get("/piInfo", function(req, res){
+	getAddr().then(function(d){
+		httpGet(formRequest(piAddress, "osAndVolume")).then(function(data){
+			var result = querystring.parse(data);
+			console.log(result)
+			result.piAddress = piAddress
+			console.log(result)
+			res.send(result);
+		}).catch(function(e){
+			res.status(e.status).send(e.err);
+		})
+	}).catch(function(err){
+		res.status(503).send("could not find raspberry pi");
 	})
-})
+});
 
 app.get("/", function(req, res){
 	res.sendFile(__dirname + "/html/index.html");
