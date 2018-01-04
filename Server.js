@@ -308,7 +308,7 @@ app.post("/hdmi-token", passport.authenticate("google-id-token"), function(req, 
 
 app.post("/volumeUp", function(req, res){
 	if(req.isAuthenticated()){
-		httpPost("/volumeUp").then(function(data){
+		httpPost("/volumeup").then(function(data){
 			res.send(data);
 		}).catch(function(e){
 			res.status(e.status).send(e.err);
@@ -319,7 +319,7 @@ app.post("/volumeUp", function(req, res){
 });
 
 app.post("/volumeup-token", passport.authenticate("google-id-token"), function(req, res){
-	httpPost("/volumeUp").then(function(data){
+	httpPost("/volumeup").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
@@ -328,7 +328,7 @@ app.post("/volumeup-token", passport.authenticate("google-id-token"), function(r
 
 app.post("/volumeDown", function(req, res){
 	if(req.isAuthenticated()){
-		httpPost("/volumeDown").then(function(data){
+		httpPost("/volumedown").then(function(data){
 			res.send(data);
 		}).catch(function(e){
 			res.status(e.status).send(e.err);
