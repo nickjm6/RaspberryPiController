@@ -319,7 +319,7 @@ app.post("/volumeUp", function(req, res){
 });
 
 app.post("/volumeup-token", passport.authenticate("google-id-token"), function(req, res){
-	httpPost("/volumeup").then(function(data){
+	httpPost("/volumeUp").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
