@@ -180,6 +180,14 @@ app.get("/getVol", function(req, res){
 	})
 })
 
+app.get("/osAndVolume", function(req, res){
+	httpGet(formRequest(piAddress, "osAndVolume")).then(function(data){
+		res.send(data);
+	}).catch(function(e){
+		res.status(e.status).send(e.err);
+	})
+})
+
 app.get("/", function(req, res){
 	res.sendFile(__dirname + "/html/index.html");
 })
