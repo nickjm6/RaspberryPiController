@@ -1,5 +1,4 @@
 var httpGet = require("./requests").get;
-var formRequest = require("./requests").formRequest;
 var ping = require("ping");
 
 var addresses = []
@@ -15,7 +14,7 @@ module.exports = function(){
 	    addresses.forEach(function(host){
 	        ping.sys.probe(host, function(isAlive){
 	            if(isAlive){
-	            	httpGet(formRequest(host)).then(function(res){
+	            	httpGet(host).then(function(res){
 	            		if(res === sig){
 	            			resolve(host);
 	            		}

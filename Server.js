@@ -30,22 +30,8 @@ db.on("error", console.error.bind(console, "Could not connect to DB"));
 require("./config/passport")(passport)
 
 var httpGet = requests.get;
-var httpPot = requests.post;
-var formRequest = requests.formRequest;
-
-var createUser = function(username, password){
-	var newUser = new User({
-		username: username,
-		password: password
-	});
-	newUser.save(function(err){
-		if(err){
-			console.log(err);
-		} else{
-			console.log("save successful");
-		}
-	})
-}
+var httpPost = requests.post;
+var getJSON = requests.getJSON;
 
 //set up app in current directory
 app.use(express.static(__dirname));
@@ -68,7 +54,7 @@ app.get("/piAddress", function(req, res){
 })
 
 app.get("/currentOS", function(req, res){
-	httpGet(formRequest(piAddress, "currentOS")).then(function(data){
+	httpGet(piAddress, "currentOS").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
@@ -76,7 +62,7 @@ app.get("/currentOS", function(req, res){
 })
 
 app.get("/getVol", function(req, res){
-	httpGet(formRequest(piAddress, "getVol")).then(function(data){
+	httpGet(piAddress, "getVol").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
@@ -86,7 +72,7 @@ app.get("/getVol", function(req, res){
 app.get("/piInfo", function(req, res){
 	getAddr().then(function(d){
 		piAddress = d;
-		httpGet(formRequest(piAddress, "osAndVolume")).then(function(data){
+		httpGet(piAddress, "osAndVolume").then(function(data){
 			var result = querystring.parse(data);
 			console.log(result)
 			result.piAddress = piAddress
@@ -122,7 +108,7 @@ app.get("/pokemon", function(req, res){
 
 app.post("/reboot", function(req, res){
 	if(req.isAuthenticated()){
-		httpPost("/reboot", {}, piAddress).then(function(data){
+		httpPost(piAddress, "reboot").then(function(data){
 			res.send(data)
 		}).catch(function(e){
 			res.status(e.status).send(e.err)
@@ -134,7 +120,7 @@ app.post("/reboot", function(req, res){
 });
 
 app.post("/reboot-token", passport.authenticate("google-id-token"), function(req, res){
-	httpPost("/reboot", {}, piAddress).then(function(data){
+	httpPost(piAddress, "reboot").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
@@ -145,7 +131,7 @@ app.post("/switchOS", function(req, res){
 	if(req.isAuthenticated()){
 		res.setHeader('Access-Control-Allow-Origin','*');
 		osName = req.body.osName
-		httpPost("/switchOS", {osName: osName}, piAddress).then(function(data){
+		httpPost(piAddress, "switchOS", {osName: osName}).then(function(data){
 			res.send(data);
 		}).catch(function(e){
 			res.status(e.status).send(e.err);
@@ -158,7 +144,7 @@ app.post("/switchOS", function(req, res){
 app.post("/switchOS-token", passport.authenticate("google-id-token"), function(req, res){
 	res.setHeader("Access-Control-Allow-Origin", "*");
 	osName = req.body.osName
-	httpPost("/switchOS", {osName: osName}, piAddress).then(function(data){
+	httpPost(piAddress, "switchOS", {osName: osName}).then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
@@ -167,7 +153,7 @@ app.post("/switchOS-token", passport.authenticate("google-id-token"), function(r
 
 app.post("/rca", function(req, res){
 	if(req.isAuthenticated()){
-		httpPost("/rca", {}, piAddress).then(function(data){
+		httpPost(piAddress, "rca").then(function(data){
 			res.send(data);
 		}).catch(function(e){
 			res.status(e.status).send(e.err);
@@ -178,7 +164,7 @@ app.post("/rca", function(req, res){
 })
 
 app.post("/rca-token", passport.authenticate("google-id-token"), function(req, res){
-	httpPost("/rca", {}, piAddress).then(function(data){
+	httpPost(piAddress, "rca").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
@@ -187,7 +173,7 @@ app.post("/rca-token", passport.authenticate("google-id-token"), function(req, r
 
 app.post("/hdmi", function(req, res){
 	if(req.isAuthenticated()){
-		httpPost("/hdmi", {}, piAddress).then(function(data){
+		httpPost(piAddress, "hdmi").then(function(data){
 			res.send(data);
 		}).catch(function(e){;
 			res.status(e.status).send(e.err);
@@ -198,7 +184,7 @@ app.post("/hdmi", function(req, res){
 })
 
 app.post("/hdmi-token", passport.authenticate("google-id-token"), function(req, res){
-	httpPost("/hdmi", {}, piAddress).then(function(data){
+	httpPost(piAddress, "hdmi").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
@@ -207,7 +193,7 @@ app.post("/hdmi-token", passport.authenticate("google-id-token"), function(req, 
 
 app.post("/volumeUp", function(req, res){
 	if(req.isAuthenticated()){
-		httpPost("/volumeup", {}, piAddress).then(function(data){
+		httpPost(piAddress, "volumeup").then(function(data){
 			res.send(data);
 		}).catch(function(e){
 			res.status(e.status).send(e.err);
@@ -218,7 +204,7 @@ app.post("/volumeUp", function(req, res){
 });
 
 app.post("/volumeup-token", passport.authenticate("google-id-token"), function(req, res){
-	httpPost("/volumeup", {}, piAddress).then(function(data){
+	httpPost(piAddress, "/volumeup").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
@@ -227,7 +213,7 @@ app.post("/volumeup-token", passport.authenticate("google-id-token"), function(r
 
 app.post("/volumeDown", function(req, res){
 	if(req.isAuthenticated()){
-		httpPost("/volumedown", {}, piAddress).then(function(data){
+		httpPost(piAddress, "/volumedown").then(function(data){
 			res.send(data);
 		}).catch(function(e){
 			res.status(e.status).send(e.err);
@@ -239,7 +225,7 @@ app.post("/volumeDown", function(req, res){
 })
 
 app.post("/volumedown-token", passport.authenticate("google-id-token"), function(req, res){
-	httpPost("/volumedown", {}, piAddress).then(function(data){
+	httpPost(piAddress, "/volumedown").then(function(data){
 		res.send(data);
 	}).catch(function(e){
 		res.status(e.status).send(e.err);
