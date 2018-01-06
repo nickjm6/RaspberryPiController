@@ -627,7 +627,7 @@ describe("rasplex tests", function(){
 		})
 	})
 
-	it.skip("should reboot the raspberry pi", function(done){
+	it("should reboot the raspberry pi", function(done){
 		httpPost(piAddress, "reboot", {test: true}).then(function(data){
 			expect(data).to.equal("success")
 			done();
