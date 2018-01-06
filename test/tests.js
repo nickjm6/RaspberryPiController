@@ -38,7 +38,7 @@ describe("Server tests", function(){
 
 	describe("Get requests to server", function(){
 
-		this.timeout(3000);
+		this.timeout(5000);
 
 		it("should be able to get the pi address from the server", function(done){
 			httpGet("myrazpi.com", "piAddress").then(function(data){
@@ -304,7 +304,7 @@ describe.skip("raspbian tests", function(){
 
 	it("should be able to get volume", function(done){
 		httpGet(piAddress, "getVol").then(function(res){
-			var vol = parseInt(data);
+			var vol = parseInt(res);
 			assert.isBelow(vol, 101);
 			assert.isAtLeast(vol, 0);
 			done();
@@ -323,7 +323,7 @@ describe.skip("raspbian tests", function(){
 	})
 
 	it("should be able to get current OS", function(done){
-		httpGet(piAddress, "currentOS", function(res){
+		httpGet(piAddress, "currentOS").then(function(res){
 			expect(res).to.equal("raspbian");
 			done();
 		}).catch(function(err){
@@ -332,9 +332,10 @@ describe.skip("raspbian tests", function(){
 	})
 
 	it("should be able to get the os and volume from the server", function(done){
-		requests.getJSON(piAddress, "osAndVolume").then(function(res){
-			var volume = parseInt(res.volume);
-			var os = res.os;
+		httpGet(piAddress, "osAndVolume").then(function(res){
+			var data = querystring.parse(res)
+			var volume = parseInt(data.volume);
+			var os = data.os;
 			assert.isBelow(volume, 101);
 			assert.isAtLeast(volume, 0);
 			expect(osList).to.include(os);
@@ -421,7 +422,7 @@ describe.skip("retropie tests", function(){
 
 	it("should be able to get volume", function(done){
 		httpGet(piAddress, "getVol").then(function(res){
-			var vol = parseInt(data);
+			var vol = parseInt(res);
 			assert.isBelow(vol, 101);
 			assert.isAtLeast(vol, 0);
 			done();
@@ -440,7 +441,7 @@ describe.skip("retropie tests", function(){
 	})
 
 	it("should be able to get current OS", function(done){
-		httpGet(piAddress, "currentOS", function(res){
+		httpGet(piAddress, "currentOS").then(function(res){
 			expect(res).to.equal("retropie");
 			done();
 		}).catch(function(err){
@@ -449,9 +450,10 @@ describe.skip("retropie tests", function(){
 	})
 
 	it("should be able to get the os and volume from the server", function(done){
-		requests.getJSON(piAddress, "osAndVolume").then(function(res){
-			var volume = parseInt(res.volume);
-			var os = res.os;
+		httpGet(piAddress, "osAndVolume").then(function(res){
+			var data = querystring.parse(res)
+			var volume = parseInt(data.volume);
+			var os = data.os;
 			assert.isBelow(volume, 101);
 			assert.isAtLeast(volume, 0);
 			expect(osList).to.include(os);
@@ -538,7 +540,7 @@ describe.skip("kodi tests", function(){
 
 	it("should be able to get volume", function(done){
 		httpGet(piAddress, "getVol").then(function(res){
-			var vol = parseInt(data);
+			var vol = parseInt(res);
 			assert.isBelow(vol, 101);
 			assert.isAtLeast(vol, 0);
 			done();
@@ -557,7 +559,7 @@ describe.skip("kodi tests", function(){
 	})
 
 	it("should be able to get current OS", function(done){
-		httpGet(piAddress, "currentOS", function(res){
+		httpGet(piAddress, "currentOS").then(function(res){
 			expect(res).to.equal("kodi");
 			done();
 		}).catch(function(err){
@@ -566,9 +568,10 @@ describe.skip("kodi tests", function(){
 	})
 
 	it("should be able to get the os and volume from the server", function(done){
-		requests.getJSON(piAddress, "osAndVolume").then(function(res){
-			var volume = parseInt(res.volume);
-			var os = res.os;
+		httpGet(piAddress, "osAndVolume").then(function(res){
+			var data = querystring.parse(res)
+			var volume = parseInt(data.volume);
+			var os = data.os;
 			assert.isBelow(volume, 101);
 			assert.isAtLeast(volume, 0);
 			expect(osList).to.include(os);
@@ -582,10 +585,10 @@ describe.skip("kodi tests", function(){
 		httpGet(piAddress, "getVol").then(function(res){
 			var expected;
 			var vol = parseInt(res);
-			if(vol > 95)
+			if(vol > 97)
 				expected = 100;
 			else
-				expected = vol + 5;
+				expected = vol + 3;
 			httpPost(piAddress, "volumeup").then(function(data){
 				assert.equal(parseInt(data), expected)
 				done();
@@ -600,10 +603,10 @@ describe.skip("kodi tests", function(){
 		httpGet(piAddress, "getVol").then(function(res){
 			var expected;
 			var vol = parseInt(res);
-			if(vol < 5)
+			if(vol < 3)
 				expected = 0;
 			else
-				expected = vol - 5;
+				expected = vol - 3;
 			httpPost(piAddress, "volumedown").then(function(data){
 				assert.equal(parseInt(data), expected)
 				done();
@@ -614,7 +617,7 @@ describe.skip("kodi tests", function(){
 	});
 })
 
-describe("rasplex tests", function(){
+describe.skip("rasplex tests", function(){
 	this.timeout(5000)
 
 	var piAddress
@@ -636,7 +639,7 @@ describe("rasplex tests", function(){
 		})
 	})
 
-	it.skip("should boot to rca", function(done){
+	it("should boot to rca", function(done){
 		httpPost(piAddress, "rca", {test: true}).then(function(data){
 			expect(data).to.equal("success")
 			done();
@@ -644,12 +647,21 @@ describe("rasplex tests", function(){
 			done(err);
 		})
 	})
-	it.skip("should boot to hdmi", function(done){
+	it("should boot to hdmi", function(done){
 		httpPost(piAddress, "hdmi", {test: true}).then(function(data){
 			expect(data).to.equal("success")
 			done();
 		}).catch(function(err){
 			done(err);
+		})
+	})
+
+	it("should be able to boot to another os", function(done){
+		httpPost(piAddress, "switchOS", {test: true, osName: "raspbian"}).then(function(data){
+			expect(data).to.equal("success")
+			done();
+		}).catch(function(err){
+			done(err)
 		})
 	})
 
@@ -682,10 +694,11 @@ describe("rasplex tests", function(){
 		})
 	})
 
-	it.skip("should be able to get the os and volume from the server", function(done){
-		requests.getJSON(piAddress, "osAndVolume").then(function(res){
-			var volume = parseInt(res.volume);
-			var os = res.os;
+	it("should be able to get the os and volume from the server", function(done){
+		httpGet(piAddress, "osAndVolume").then(function(res){
+			var data = querystring.parse(res)
+			var volume = parseInt(data.volume);
+			var os = data.os;
 			assert.isBelow(volume, 101);
 			assert.isAtLeast(volume, 0);
 			expect(osList).to.include(os);
