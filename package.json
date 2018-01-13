@@ -23,7 +23,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "sudo node Server.js & mocha test && node ./selenium/test.js && sudo killall node"
+    "test": "sudo node Server.js & mocha test --exit && node ./selenium/test.js && sudo killall node"
   },
   "repository": {
     "type": "git",

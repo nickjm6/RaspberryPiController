@@ -17,7 +17,7 @@ var getAddr = require("./config/getAddr");
 //set piAddress to empty string, set portNumber to 80, set count to 1
 var piAddress;
 var portNumber = 80
-var mongoDB = "mongodb://localhost/test"
+var mongoDB = "mongodb://localhost/razpi"
 var sig = "MyRazPi";
 
 mongoose.connect(mongoDB, {
@@ -74,9 +74,7 @@ app.get("/piInfo", function(req, res){
 		piAddress = d;
 		httpGet(piAddress, "osAndVolume").then(function(data){
 			var result = querystring.parse(data);
-			console.log(result)
 			result.piAddress = piAddress
-			console.log(result)
 			res.send(result);
 		}).catch(function(e){
 			res.status(e.status).send(e.err);
