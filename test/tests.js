@@ -161,6 +161,131 @@ describe("Server tests", function(){
 		});
 	})
 
+	describe("Get requests to localhost", function(){
+
+		this.timeout(5000);
+
+		it("should be able to get the pi address from localhost", function(done){
+			httpGet("localhost", "piAddress").then(function(data){
+				expect(regIP.test(data)).to.be.true;
+				done()
+			}).catch(function(e){
+				done(e);
+			})
+		})
+
+		it("should be able to get the current os from localhost", function(done){
+			httpGet("localhost", "currentOS").then(function(data){
+				expect(osList).to.include(data)
+				done();
+			}).catch(function(e){
+				done(e);
+			})
+		});
+
+		it("should be able to get the volume from localhost", function(done){
+			httpGet("localhost", "getVol").then(function(data){
+				var vol = parseInt(data);
+				assert.isBelow(vol, 101);
+				assert.isAtLeast(vol, 0);
+				done();
+			}).catch(function(e){
+				done(e);
+			})
+		});
+
+		it("should be able to get the piInfo from localhost", function(done){
+			requests.getJSON("localhost", "piInfo").then(function(res){
+				var volume = parseInt(res.volume);
+				var os = res.os;
+				var piAddr = res.piAddress;
+				assert.isBelow(volume, 101);
+				assert.isAtLeast(volume, 0);
+				expect(osList).to.include(os);
+				expect(regIP.test(piAddr)).to.be.true;
+				done();
+			}).catch(function(e){
+				done(e);
+			})
+		})
+	});
+
+	describe.skip("Post requests session to localhost", function(){
+		it("should be able to reboot the raspberry pi from localhost", function(done){
+			httpPost("localhost", "reboot", {test: true}).then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+
+		it("should be able to switch to raspbian from localhost", function(done){
+			httpPost("localhost", "switchOS", {osName: "raspbian", test: true}).then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+
+		it("should be able to switch to raspbian from localhost", function(done){
+			httpPost("localhost", "switchOS", {osName: "raspbian", test: true}).then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+
+
+		it("should be able to switch to raspbian from localhost", function(done){
+			httpPost("localhost", "switchOS", {osName: "raspbian", test: true}).then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+
+
+		it("should be able to switch to raspbian from localhost", function(done){
+			httpPost("localhost", "switchOS", {osName: "raspbian", test: true}).then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+
+		it("should be able to boot to rca from localhost", function(done){
+			httpPost("localhost", "rca", {test: true}).then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+
+		it("should be able to boot to hdmi from localhost", function(done){
+			httpPost("localhost", "hdmi", {test: true}).then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+
+		it("should be able to turn the volume up from localhost", function(done){
+			httpPost("localhost", "volumeup").then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+
+		it("should be able to turn the volume down from localhost", function(done){
+			httpPost("localhost", "volumedown").then(function(data){
+				done();
+			}).catch(function(err){
+				done(err);
+			})
+		});
+	})
+
 	describe.skip("Post requests token to server", function(){
 		it("should be able to reboot using token request", function(done){
 			var token = null;

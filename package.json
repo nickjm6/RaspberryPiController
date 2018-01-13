@@ -7,6 +7,7 @@
     "body-parser": "^1.15.2",
     "chai": "^4.1.2",
     "child-process": "^1.0.2",
+    "chromedriver": "^2.34.1",
     "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "express-session": "^1.15.6",
@@ -16,11 +17,13 @@
     "passport-google-id-token": "^0.4.4",
     "passport-google-oauth": "^1.0.0",
     "ping": "^0.2.2",
-    "querystring": "^0.2.0"
+    "querystring": "^0.2.0",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "sleep": "^5.1.1"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "mocha test"
+    "test": "sudo node Server.js & mocha test && node ./selenium/test.js && sudo killall node"
   },
   "repository": {
     "type": "git",
