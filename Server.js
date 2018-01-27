@@ -19,6 +19,8 @@ var piAddress;
 var portNumber = 80
 var mongoDB = "mongodb://localhost/razpi"
 var sig = "MyRazPi";
+var htmlPath = __dirname + "/frontend/html/"
+console.log(htmlPath)
 
 mongoose.connect(mongoDB, {
 	useMongoClient: true
@@ -34,7 +36,7 @@ var httpPost = requests.post;
 var getJSON = requests.getJSON;
 
 //set up app in current directory
-app.use(express.static(__dirname));
+app.use(express.static(__dirname + "/frontend/resources"));
 app.use(cookieParser());
 app.use(session({
 	secret: sig
@@ -85,23 +87,23 @@ app.get("/piInfo", function(req, res){
 });
 
 app.get("/", function(req, res){
-	res.sendFile(__dirname + "/html/index.html");
+	res.sendFile(htmlPath + "index.html");
 })
 
 app.get("/login", function(req, res){
-	res.sendFile(__dirname + "/html/login.html");
+	res.sendFile(htmlPath + "login.html");
 })
 
 app.get("/piController", function(req, res){
 	if(req.isAuthenticated()){
-		res.sendFile(__dirname + "/html/piController.html")
+		res.sendFile(htmlPath + "piController.html")
 	} else{
 		res.redirect("/login")
 	}
 })
 
 app.get("/pokemon", function(req, res){
-	res.sendFile(__dirname + "/html/pokemon.html")
+	res.sendFile(htmlPath + "pokemon.html")
 })
 
 app.post("/reboot", function(req, res){
