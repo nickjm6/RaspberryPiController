@@ -3,6 +3,15 @@ import ReactDOM from 'react-dom'
 
 import Header from "./Header"
 import CommandCenter from "./CommandCenter"
+import $ from "jquery"
+
+const sig = "MyRazPi"
+
+let hosts = [];
+
+for(let i = 0; i < 256; i++){
+    hosts.push("http://192.168.0." + i);
+}
 
 class App extends Component {
     constructor(props){
@@ -11,6 +20,17 @@ class App extends Component {
             piAddress: "Unavailible",
             currentOS: "Unknown"
         }
+    }
+
+    componentDidMount(){
+        hosts.forEach((host) => {
+            $.get(host, (res) => {
+                if (res === sig) {
+                    this.setState({ piAddress: host.replace("http://", "")});
+                    $.get(host + "/currentOS", (os) => this.setState({ currentOS: os }));
+                }
+            }).catch(() => {return})
+        });
     }
 
     render() {

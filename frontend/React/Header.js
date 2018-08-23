@@ -7,10 +7,11 @@ const style = {
 }
 
 function Header(props) {
+    let {piAddress, currentOS} = props.piInfo;
     return (
         <Jumbotron style={style}> 
-            <h2>Pi Address: {props.piAddress}</h2>
-            <h3>Current OS: {props.currentOS}</h3>
+            <h2>Pi Address: {piAddress}</h2>
+            <h3>Current OS: {currentOS}</h3>
         </Jumbotron>
     )
 };
