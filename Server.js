@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
-var portNumber = 80
+var portNumber = 8081
 var sig = "MyRazPi";
 var htmlPath = __dirname + "/frontend/html/"
 
