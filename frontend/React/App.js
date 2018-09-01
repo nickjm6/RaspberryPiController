@@ -9,7 +9,7 @@ const sig = "MyRazPi"
 
 let hosts = [];
 
-for(let i = 0; i < 256; i++){
+for(let i = 2; i < 256; i++){
     hosts.push("http://192.168.0." + i);
 }
 
@@ -41,7 +41,7 @@ class App extends Component {
         return (
           <div>
             <Header piInfo={piInfo} />
-            <CommandCenter />
+            {this.state.piAddress === "Unavailible" ? null : <CommandCenter />}
           </div>
         );
     }
