@@ -13,6 +13,11 @@ app.use("/images", express.static(__dirname + "/frontend/images"));
 app.use("/css", express.static(__dirname + "/frontend/css"));
 app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/css/"))
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use((req, res, next) => {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+});
 
 app.get("/", function(req, res){
 	res.sendFile(htmlPath + "index.html");
