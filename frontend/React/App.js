@@ -18,7 +18,8 @@ class App extends Component {
         super(props);
         this.state = {
             piAddress: null,
-            currentOS: null
+            currentOS: null,
+            loaded: false
         }
     }
 
@@ -28,7 +29,8 @@ class App extends Component {
                 if (res === sig) {
                     $.get(host + "/currentOS", (os) => this.setState({ 
                         currentOS: os,
-                        piAddress: host.replace("http://", "")
+                        piAddress: host.replace("http://", ""),
+                        loaded: true
                     }));
                 }
             }).catch(() => {return})
@@ -42,8 +44,8 @@ class App extends Component {
         }
         return (
           <div>
-            <Header piInfo={piInfo} />
-            {this.state.piAddress == null ? null : <CommandCenter />}
+            <Header piInfo={piInfo} loaded={this.state.loaded}/>
+            {this.state.loaded ? <CommandCenter /> : null}
           </div>
         );
     }
