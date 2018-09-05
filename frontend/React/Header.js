@@ -10,8 +10,12 @@ function Header(props) {
     let {piAddress, currentOS} = props.piInfo;
     return (
         <Jumbotron style={style}> 
-            <h2>Pi Address: {piAddress}</h2>
-            <h3>Current OS: {currentOS}</h3>
+            {piAddress == null ? null :
+              <div>
+                <h2>Pi Address: {piAddress}</h2>
+                <h3>Current OS: {currentOS}</h3>
+              </div>
+            }
         </Jumbotron>
     )
 };

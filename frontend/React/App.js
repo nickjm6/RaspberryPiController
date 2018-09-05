@@ -17,8 +17,8 @@ class App extends Component {
     constructor(props){
         super(props);
         this.state = {
-            piAddress: "Unavailible",
-            currentOS: "Unknown"
+            piAddress: null,
+            currentOS: null
         }
     }
 
@@ -26,8 +26,10 @@ class App extends Component {
         hosts.forEach((host) => {
             $.get(host, (res) => {
                 if (res === sig) {
-                    this.setState({ piAddress: host.replace("http://", "")});
-                    $.get(host + "/currentOS", (os) => this.setState({ currentOS: os }));
+                    $.get(host + "/currentOS", (os) => this.setState({ 
+                        currentOS: os,
+                        piAddress: host.replace("http://", "")
+                    }));
                 }
             }).catch(() => {return})
         });
@@ -41,7 +43,7 @@ class App extends Component {
         return (
           <div>
             <Header piInfo={piInfo} />
-            {this.state.piAddress === "Unavailible" ? null : <CommandCenter />}
+            {this.state.piAddress == null ? null : <CommandCenter />}
           </div>
         );
     }
