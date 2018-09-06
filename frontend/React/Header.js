@@ -13,10 +13,12 @@ function Header(props) {
     return (
         <Jumbotron style={style}>
             {props.loaded ? 
-                (<div>
-                    <h2>Pi Address: {piAddress}</h2>
-                    <h3>currentOS: {currentOS}</h3>
-                </div>) :
+                piAddress == null ?
+                    <h2>Could not find Raspberry Pi...Please reload to try again</h2> :
+                    (<div>
+                        <h2>Pi Address: {piAddress}</h2>
+                        <h3>currentOS: {currentOS}</h3>
+                    </div>) :
                 (<div>
                     <h2>Looking for Raspberry Pi...</h2>
                     <Loader loaded={props.loaded} />

@@ -33,7 +33,10 @@ class App extends Component {
                         loaded: true
                     }));
                 }
-            }).catch(() => {return})
+            }).catch(() => {
+                if(host.match(/[0-9]*$/) == "255")
+                    this.setState({loaded: true});
+            })
         });
     }
 
@@ -45,7 +48,7 @@ class App extends Component {
         return (
           <div>
             <Header piInfo={piInfo} loaded={this.state.loaded}/>
-            {this.state.loaded ? <CommandCenter /> : null}
+            {piInfo.piAddress ? <CommandCenter /> : null}
           </div>
         );
     }
