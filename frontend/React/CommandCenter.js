@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import { Jumbotron, Input, Row, Button} from 'reactstrap';
+import $ from 'jquery'
+
+import Loader from 'react-loader'
 
 const style = {
     textAlign: "center"
@@ -11,7 +14,9 @@ export default class CommandCenter extends Component {
         this.state = {
             command: "",
             newOS: "",
-            commandLineText: ""
+            commandLineText: "",
+            searching: false,
+            loadingMessage: null
         }
         
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -28,27 +33,37 @@ export default class CommandCenter extends Component {
     }
 
     handleSubmitClick(){
-        let message;
-        switch(this.state.command){
-            case "switchOS":
-                message = "Switching OS to: " + this.state.newOS;
-                break;
-            case "reboot":
-                message = "Rebooting..."
-                break;
-            case "commandLine":
-                message = "Excecuting in Command Line: " + this.state.commandLineText
-                break;
-            default:
-                message = "Please enter a command!"
+        let endpoint = "http://" + this.props.piAddress + "/" + this.state.command;
+        let data = {};
+        let validCommands = ["switchOS", "reboot"]
+        if(this.state.command == "switchOS"){
+            if(this.state.newOS  == ""){
+                alert("Please select and OS to switch to!");
+                return;
+            }
+            data.osName = this.state.newOS
         }
-        alert(message);
+        if(validCommands.includes(this.state.command)){
+            $.post(endpoint, data, (response) => {
+                console.log(response)
+                this.setState({
+                    loadingMessage: response,
+                    searching: true
+                })
+            }).catch((err) => {
+                alert(err.responseText)
+            });
+        }else if(endpoint == "")
+            alert("Please select a command")
+        else
+            alert("That functionality isn't implemented yet")
     }
 
     render() {
-
         return (
             <Jumbotron style={style}> 
+              {this.state.loadingMessage ? <div><h3>{this.state.loadingMessage}</h3><br /><br /></div> : null}
+              <Loader loaded={!this.state.searching}>
                 <h3>Command Center</h3>
                 <Input type="select" name="command" onChange={this.handleInputChange}>
                     <option value="">Select a Command</option>
@@ -68,6 +83,7 @@ export default class CommandCenter extends Component {
                         <Input type="text" name="commandLineText" placeholder="Type in a command" onChange={this.handleInputChange} />
                 }<br />
                 {this.state.command === "" ? null : <Button color="info" onClick={this.handleSubmitClick}>Submit</Button>}
+              </Loader>
             </Jumbotron>
         )
     }

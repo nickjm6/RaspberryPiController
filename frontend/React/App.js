@@ -48,7 +48,7 @@ class App extends Component {
         return (
           <div>
             <Header piInfo={piInfo} loaded={this.state.loaded}/>
-            {piInfo.piAddress ? <CommandCenter /> : null}
+            {piInfo.piAddress ? <CommandCenter piAddress={piInfo.piAddress} /> : null}
           </div>
         );
     }
