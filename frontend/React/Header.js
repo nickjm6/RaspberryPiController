@@ -10,6 +10,7 @@ const style = {
 
 function Header(props) {
     let {piAddress, currentOS} = props.piInfo;
+    let formattedOS = currentOS ? currentOS.substring(0, 1).toUpperCase() + currentOS.slice(1) : null
     return (
         <Jumbotron style={style}>
             {props.loaded ? 
@@ -17,7 +18,7 @@ function Header(props) {
                     <h2>Could not find Raspberry Pi...Please reload to try again</h2> :
                     (<div>
                         <h2>Pi Address: {piAddress}</h2>
-                        <h3>currentOS: {currentOS}</h3>
+                        <h3>Current OS: {formattedOS}</h3>
                     </div>) :
                 (<div>
                     <h2>{props.loadingMessage}</h2>

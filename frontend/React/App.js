@@ -99,7 +99,7 @@ class App extends Component {
                     loadingMessage: response,
                     loaded: false
                 });
-                this.queryPi(0)
+                delay(10000).then(() => this.queryPi(0))
             }).catch((err) => {
                 alert(err.responseText)
             });
