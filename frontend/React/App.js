@@ -110,7 +110,11 @@ class App extends Component {
     }
 
     piSearch(){
-        this.setState({loadingMessage: "Looking for Raspberry Pi..."})
+        this.setState({
+            loadingMessage: "Looking for Raspberry Pi...",
+            piAddress: null,
+            currentOS: null
+        })
         hosts.forEach((host) => {
             $.get(host, (res) => {
                 if (res === sig) {
