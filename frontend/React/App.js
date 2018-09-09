@@ -39,7 +39,8 @@ class App extends Component {
     }
 
     queryPi(retryCount){
-        if(retryCount >= maxRetry || !piAddress){
+        let piAddress = this.state.piAddress
+        if(retryCount >= maxRetry || piAddress){
             this.piSearch()
             return;
         }
