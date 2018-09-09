@@ -20,7 +20,7 @@ function Header(props) {
                         <h3>currentOS: {currentOS}</h3>
                     </div>) :
                 (<div>
-                    <h2>Looking for Raspberry Pi...</h2>
+                    <h2>{props.loadingMessage}</h2>
                     <Loader loaded={props.loaded} />
                 </div>)
             } 

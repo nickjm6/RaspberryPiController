@@ -19,8 +19,56 @@ class App extends Component {
         this.state = {
             piAddress: null,
             currentOS: null,
-            loaded: false
+            loaded: false,
+            loadingMessage: "Looking for Raspberry Pi...",
+            commandName: "",
+            commandData: ""
         }
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmitClick = this.handleSubmitClick.bind(this);
+    }
+
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        if(name == "commandName")
+            this.setState({commandData: ""})
+        this.setState({
+          [name]: value
+        });
+    }
+
+    handleSubmitClick(){
+        if(this.state.piAddress == null){
+            alert("Raspberry Pi not availible");
+            return;
+        }
+        let endpoint = "http://" + this.state.piAddress + "/" + this.state.commandName;
+        let data = {};
+        let validCommands = ["switchOS", "reboot"]
+        if(this.state.commandName == "switchOS"){
+            if(this.state.commandData  == ""){
+                alert("Please select and OS to switch to!");
+                return;
+            }
+            data.osName = this.state.commandData
+        }
+        if(validCommands.includes(this.state.commandName)){
+            $.post(endpoint, data, (response) => {
+                console.log(response)
+                this.setState({
+                    loadingMessage: response,
+                    loaded: false
+                })
+            }).catch((err) => {
+                alert(err.responseText)
+            });
+        }else if(endpoint == "")
+            alert("Please select a command")
+        else
+            alert("That functionality isn't implemented yet")
     }
 
     componentDidMount(){
@@ -30,7 +78,8 @@ class App extends Component {
                     $.get(host + "/currentOS", (os) => this.setState({ 
                         currentOS: os,
                         piAddress: host.replace("http://", ""),
-                        loaded: true
+                        loaded: true,
+                        loadingMessage: ""
                     }));
                 }
             }).catch(() => {
@@ -45,10 +94,14 @@ class App extends Component {
             piAddress: this.state.piAddress,
             currentOS: this.state.currentOS
         }
+        let command = {
+            commandName: this.state.commandName,
+            commandData: this.state.commandData
+        }
         return (
           <div>
-            <Header piInfo={piInfo} loaded={this.state.loaded}/>
-            {piInfo.piAddress ? <CommandCenter piAddress={piInfo.piAddress} /> : null}
+            <Header piInfo={piInfo} loaded={this.state.loaded} loadingMessage={this.state.loadingMessage}/>
+            {this.state.loaded && this.state.piAddress ? <CommandCenter onChange={this.handleInputChange} onSubmit={this.handleSubmitClick} command={command} /> : null}
           </div>
         );
     }
