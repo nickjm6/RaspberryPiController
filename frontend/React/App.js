@@ -6,8 +6,15 @@ import CommandCenter from "./CommandCenter"
 import $ from "jquery"
 
 const sig = "MyRazPi"
+const maxRetry = 5
 
 let hosts = [];
+
+let delay = d => {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, d)
+    })
+}
 
 for(let i = 2; i < 256; i++){
     hosts.push("http://192.168.0." + i);
@@ -20,13 +27,43 @@ class App extends Component {
             piAddress: null,
             currentOS: null,
             loaded: false,
-            loadingMessage: "Looking for Raspberry Pi...",
+            loadingMessage: "",
             commandName: "",
             commandData: ""
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmitClick = this.handleSubmitClick.bind(this);
+        this.piSearch = this.piSearch.bind(this);
+        this.queryPi = this.queryPi.bind(this);
+    }
+
+    queryPi(retryCount){
+        if(retryCount >= maxRetry || !piAddress){
+            this.piSearch()
+            return;
+        }
+        let hostname = "http://" + piAddress
+        $.get(hostname, (response) => {
+            if(response == sig){
+                $.get(hostname + "/currentOS", (os) => {
+                    this.setState({ 
+                        currentOS: os,
+                        loaded: true,
+                        loadingMessage: ""
+                    })
+                }).catch((err) => {
+                    console.log(err.statusText)
+                    this.piSearch()
+                    return;
+                })
+            } else{
+                this.piSearch();
+                return;
+            }
+        }).catch((err) => {
+            delay(5000).then(() => this.queryPi(retryCount + 1))
+        })
     }
 
     handleInputChange(event) {
@@ -57,11 +94,11 @@ class App extends Component {
         }
         if(validCommands.includes(this.state.commandName)){
             $.post(endpoint, data, (response) => {
-                console.log(response)
                 this.setState({
                     loadingMessage: response,
                     loaded: false
-                })
+                });
+                this.queryPi(0)
             }).catch((err) => {
                 alert(err.responseText)
             });
@@ -71,7 +108,8 @@ class App extends Component {
             alert("That functionality isn't implemented yet")
     }
 
-    componentDidMount(){
+    piSearch(){
+        this.setState({loadingMessage: "Looking for Raspberry Pi..."})
         hosts.forEach((host) => {
             $.get(host, (res) => {
                 if (res === sig) {
@@ -87,6 +125,10 @@ class App extends Component {
                     this.setState({loaded: true});
             })
         });
+    }
+
+    componentDidMount(){
+        this.piSearch()
     }
 
     render() {
