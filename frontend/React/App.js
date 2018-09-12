@@ -45,9 +45,10 @@ class App extends Component {
             return;
         }
         let hostname = "http://" + piAddress
-        $.get(hostname, (response) => {
-            if(response == sig){
-                $.get(hostname + "/currentOS", (os) => {
+        $.get(hostname + "/ping", response => response.json()).then(response =>{
+            if(response && response.message == sig){
+                $.get(hostname + "/currentOS", result => result.json).then(result =>{
+                    let os = result && result.currentOS ? result.currentOS : null
                     this.setState({ 
                         currentOS: os,
                         loaded: true,
@@ -94,9 +95,10 @@ class App extends Component {
             data.osName = this.state.commandData
         }
         if(validCommands.includes(this.state.commandName)){
-            $.post(endpoint, data, (response) => {
+            $.post(endpoint, data, response => response.json()).then(response => {
+                let message = response && response.message ? response.message : "rebooting..."
                 this.setState({
-                    loadingMessage: response,
+                    loadingMessage: message,
                     loaded: false
                 });
                 delay(10000).then(() => this.queryPi(0))
@@ -116,14 +118,19 @@ class App extends Component {
             currentOS: null
         })
         hosts.forEach((host) => {
-            $.get(host, (res) => {
-                if (res === sig) {
-                    $.get(host + "/currentOS", (os) => this.setState({ 
-                        currentOS: os,
-                        piAddress: host.replace("http://", ""),
-                        loaded: true,
-                        loadingMessage: ""
-                    }));
+            $.get(host + "/ping", res => res.json()).then(res =>{
+                if (res && res.message === sig) {
+                    $.get(host + "/currentOS", result => result.json()).then(result => {
+                        console.log(result)
+                        let os = result && result.currentOS ? result.currentOS : null
+                        console.log(os)
+                        this.setState({ 
+                            currentOS: os,
+                            piAddress: host.replace("http://", ""),
+                            loaded: true,
+                            loadingMessage: ""
+                        });
+                    });
                 }
             }).catch(() => {
                 if(host.match(/[0-9]*$/) == "255")
