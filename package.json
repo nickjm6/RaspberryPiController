@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "sudo node Server.js",
-    "build": "webpack"
+    "build": "node ./env.js && webpack"
   },
   "repository": {
     "type": "git",

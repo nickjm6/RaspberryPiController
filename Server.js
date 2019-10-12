@@ -44,18 +44,22 @@ app.get("/currentOS", function(req, res){
 
 app.get("/getVol", function(req, res){
 	result = execSync("vol")
-	if (result.stderr)
-		res.status(400).json({message: result.stderr, volume: 0})
-	else
+	if (result.stderr){
+		console.error(result.stderr)
+		res.status(500).json({message: "An internal error occured"})
+	}
+	else{
 		res.json({volume: parseInt(result)});
+	}
 })
 
 app.get("/osAndVolume", function(req, res){
 	result = execSync("vol");
-	if(result.stderr)
-		res.status(400).json({message: result.stderr, volume: 0});
+	if(result.stderr){
+		console.error(result.stderr)
+		res.status(400).json({message: "An internal error occured"});
+	}
 	else{
-		intVol = parseInt(result);
 		res.json({volume: parseInt(result), currentOS: config.osName});
 	}
 })
@@ -73,7 +77,7 @@ app.post("/switchOS", function(req, res){
 		res.json({message: "Attempting to switchOS"})
 		result = execSync(osName)
 		if(result.stderr){
-			console.log(result.stderr)
+			console.error(result.stderr)
 		}
 	}
 	else{
@@ -81,74 +85,53 @@ app.post("/switchOS", function(req, res){
 	}
 });
 
-//reboots the raspberry pi
 app.post("/reboot", function(req, res){
-	res.setHeader('Access-Control-Allow-Origin','*');
-	if(req.body.test != undefined){
-		res.json({message: "success"})
-		return;
-	}
 	res.json({message: "attempting reboot"})
 	result = execSync("sudo reboot")
 	if(result.stderr){
-		console.log(result.stderr)
+		console.error(result.stderr)
 	}
 })
 
-//changes the output mode to rca, which will display onto the touchscreen
 app.post("/rca", function(req, res){
-	res.setHeader('Access-Control-Allow-Origin','*');
-	if(req.body.test != undefined){
-		res.json({message: "success"})
-		return;
-	}
 	res.json({message: "Attempting reboot"})
 	execSync("rca")
 	if(result.stderr){
-		console.log(result.stderr)
+		console.error(result.stderr)
 	}
 })
 
-//sets the output mode to HDMI
 app.post("/hdmi", function(req, res){
-	res.setHeader('Access-Control-Allow-Origin','*');
-	if(req.body.test != undefined){
-		res.json({message: "success"})
-		return;
-	}
 	res.json({message: "Attempting reboot"})
 	result = execSync("hdmi")
 	if(result.stderr){
-		console.log(result.stderr)
+		console.error(result.stderr)
 	}
 })
 
-//Turns the volume up on the pi
 app.post("/volumeup", function(req, res){
-	res.setHeader("Access-Control-Allow-Orgin", "*")
 	result = execSync("vol +")
-	if (result.stderr)
-		res.status(400).json({message: result.stderr, volume: 0})
-	else
-		res.status(200).json({message: "success", volume: parseInt(result)})
+	if (result.stderr){
+		console.error(result.stderr)
+		res.status(500).json({message: "An internal error occured"})
+	}
+	else{
+		res.json({volume: parseInt(result)})
+	}
 })
 
-//turns the volume down on the pi
 app.post("/volumedown", function(req, res){
-	res.setHeader("Access-Control-Allow-Orgin", "*")
 	result = execSync("vol -")
-	if (result.stderr)
-		res.status(400).json({message: result.stderr, volume: 0})
-	else
-		res.status(200).json({message: "success", volume: parseInt(result)})
+	if (result.stderr){
+		console.error(result.stderr)
+		res.status(400).json({message: "An internal error occured"})
+	}
+	else{
+		res.status.json({volume: parseInt(result)})
+	}
 })
 
-//This puts up the server on localhost on the port specified by portNumber
-var server = app.listen(portNumber, function () {
-  var port = server.address().port;
-  console.log('Media Server running at http://localhost:%s', port);
-});
 
-app.listen(portNumber, function () {
-  	console.log("Server started");
+app.listen(config.portNumber, function () {
+  	console.log(`Server started at http://localhost:${config.portNumber}`);
 });
