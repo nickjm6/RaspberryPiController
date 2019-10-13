@@ -2,14 +2,13 @@
   "name": "raspberry-pi-server",
   "version": "1.0.0",
   "description": "A Web Application which interfaces with my Raspberry Pi to control it",
-  "main": "Server.js",
+  "main": "app.js",
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
     "chai": "^4.1.2",
     "debug": "^2.6.9",
-    "dotenv": "^8.1.0",
     "jquery": "^3.4.1",
     "mocha": "^5.2.0",
     "react": "^16.4.2",
@@ -29,7 +28,7 @@
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
-    "start": "sudo node Server.js",
+    "start": "sudo node app.js",
     "build": "node ./env.js && webpack"
   },
   "repository": {

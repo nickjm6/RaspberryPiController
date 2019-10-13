@@ -73,3 +73,4 @@ typings/
 .serverless
 
 react-bundle.js
+config.json

@@ -5,70 +5,35 @@ import Header from "./Header"
 import CommandCenter from "./CommandCenter"
 import $ from "jquery"
 
-const sig = "MyRazPi"
-const maxRetry = 5
-
-let hosts = [];
-
-let delay = d => {
-    return new Promise((resolve, reject) => {
-        setTimeout(resolve, d)
-    })
-}
-
-for(let i = 2; i < 256; i++){
-    hosts.push("http://192.168.0." + i);
-}
+import {Alert} from "reactstrap"
 
 class App extends Component {
     constructor(props){
         super(props);
         this.state = {
-            piAddress: null,
             currentOS: null,
             loaded: false,
-            loadingMessage: "",
+            errMessage: null,
+            loadingMessage: "Waiting for info on Raspberry Pi...",
             commandName: "",
             commandData: ""
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmitClick = this.handleSubmitClick.bind(this);
-        this.piSearch = this.piSearch.bind(this);
         this.queryPi = this.queryPi.bind(this);
     }
 
-    queryPi(retryCount){
-        let piAddress = this.state.piAddress
-        if(retryCount >= maxRetry || !piAddress){
-            this.piSearch()
-            return;
-        }
-        let hostname = "http://" + piAddress
-        $.get(hostname + "/ping", response => response.json()).then(response =>{
-            if(response && response.message == sig){
-                $.get(hostname + "/currentOS", result => result.json).then(result =>{
-                    let os = result && result.currentOS ? result.currentOS : null
-                    this.setState({ 
-                        currentOS: os,
-                        loaded: true,
-                        loadingMessage: ""
-                    })
-                }).catch((err) => {
-                    console.log(err.statusText)
-                    this.piSearch()
-                    return;
-                })
-            } else{
-                this.piSearch();
-                return;
-            }
-        }).catch((err) => {
-            delay(5000).then(() => this.queryPi(retryCount + 1))
+    queryPi(){
+        fetch("/currentOS").then(res => res.json()).then(jsonRes => {
+            this.setState({currentOS: jsonRes.currentOS, loaded: true, loadingMessage: ""})
+        }).catch(err => {
+            this.setState({errMessage: err.statusText})
         })
     }
 
     handleInputChange(event) {
+        this.setState({errMessage: null})
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -80,16 +45,13 @@ class App extends Component {
     }
 
     handleSubmitClick(){
-        if(this.state.piAddress == null){
-            alert("Raspberry Pi not availible");
-            return;
-        }
-        let endpoint = "http://" + this.state.piAddress + "/" + this.state.commandName;
+        this.setState({errMessage: null})
+        let endpoint = `/${this.state.commandName}`;
         let data = {};
         let validCommands = ["switchOS", "reboot"]
         if(this.state.commandName == "switchOS"){
             if(this.state.commandData  == ""){
-                alert("Please select and OS to switch to!");
+                this.setState({errMessage: "Please select and OS to switch to!"});
                 return;
             }
             data.osName = this.state.commandData
@@ -101,51 +63,21 @@ class App extends Component {
                     loadingMessage: message,
                     loaded: false
                 });
-                delay(10000).then(() => this.queryPi(0))
             }).catch((err) => {
-                alert(err.responseText)
+                this.setState({errMessage: err.responseText})
             });
         }else if(endpoint == "")
-            alert("Please select a command")
+            this.setState({errMessage: "Please select a command"})
         else
-            alert("That functionality isn't implemented yet")
-    }
-
-    piSearch(){
-        this.setState({
-            loadingMessage: "Looking for Raspberry Pi...",
-            piAddress: null,
-            currentOS: null
-        })
-        hosts.forEach((host) => {
-            $.get(host + "/ping", res => res.json()).then(res =>{
-                if (res && res.message === sig) {
-                    $.get(host + "/currentOS", result => result.json()).then(result => {
-                        console.log(result)
-                        let os = result && result.currentOS ? result.currentOS : null
-                        console.log(os)
-                        this.setState({ 
-                            currentOS: os,
-                            piAddress: host.replace("http://", ""),
-                            loaded: true,
-                            loadingMessage: ""
-                        });
-                    });
-                }
-            }).catch(() => {
-                if(host.match(/[0-9]*$/) == "255")
-                    this.setState({loaded: true});
-            })
-        });
+            this.setState({errMessage: "That functionality isn't implemented yet"})
     }
 
     componentDidMount(){
-        this.piSearch()
+        this.queryPi()
     }
 
     render() {
         let piInfo = {
-            piAddress: this.state.piAddress,
             currentOS: this.state.currentOS
         }
         let command = {
@@ -154,8 +86,9 @@ class App extends Component {
         }
         return (
           <div>
+            {this.state.errMessage ? <Alert color="danger">{this.state.errMessage}</Alert> : null}
             <Header piInfo={piInfo} loaded={this.state.loaded} loadingMessage={this.state.loadingMessage}/>
-            {this.state.loaded && this.state.piAddress ? <CommandCenter onChange={this.handleInputChange} onSubmit={this.handleSubmitClick} command={command} /> : null}
+            {this.state.loaded ? <CommandCenter onChange={this.handleInputChange} onSubmit={this.handleSubmitClick} command={command} /> : null}
           </div>
         );
     }

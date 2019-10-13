@@ -2,10 +2,9 @@
 const express = require('express');
 let app = express();
 const bodyParser = require('body-parser');
+const {execSync} = require("child_process")
 
 const htmlPath = __dirname + "/frontend/html/"
-
-require("dotenv").config()
 
 //set up app in current directory
 app.use("/javascript", express.static(__dirname + "/frontend/javascript"));
@@ -14,18 +13,18 @@ app.use("/css", express.static(__dirname + "/frontend/css"));
 app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/css/"))
 app.use(bodyParser.json());
 
-const config = {
-	osName: process.env.OSNAME,
-	portNumber: process.env.PORT,
-	signature: process.env.SIGNATURE
+let config = {}
+
+try{
+	config = require("./config.json")
+} catch(err){
+	throw new Error("Environment config is not properly set up, please run the command 'npm run build'")
 }
 
-const validOSList = ["raspbian", "retropie"]
-
-let keys = Object.keys(config)
-for(let i = 0; i < keys.length; i++){
-	let key = keys[i]
-	if(!keys[key]){
+let requiredFields = ["osName", "signature", "port", "otherOperatingSystems"]
+for(let i = 0; i < requiredFields.length; i++){
+	let key = requiredFields[i]
+	if(!config[key]){
 		throw new Error("Config is not set up, please run 'npm run build'")
 	}
 }
@@ -132,6 +131,6 @@ app.post("/volumedown", function(req, res){
 })
 
 
-app.listen(config.portNumber, function () {
-  	console.log(`Server started at http://localhost:${config.portNumber}`);
+app.listen(config.port, function () {
+  	console.log(`Server started at http://localhost:${config.port}`);
 });
