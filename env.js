@@ -7,8 +7,8 @@ let requiredVariables = [
     }, 
     {
         name: "port",
-        description: "The port number that the server should host on [Default: 8080]",
-        default: 8080,
+        description: "The port number that the server should host on [Default: 80]",
+        default: 80,
         type: "number"
     }, 
     {
