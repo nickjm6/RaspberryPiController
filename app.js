@@ -41,6 +41,10 @@ app.get("/currentOS", function(req, res){
 	res.json({currentOS: config.osName})
 });
 
+app.get("/otherOperatingSystems", (req, res) => {
+	res.json({otherOperatingSystems: config.otherOperatingSystems})
+})
+
 app.get("/getVol", function(req, res){
 	result = execSync("vol")
 	if (result.stderr){
@@ -71,8 +75,7 @@ app.post("/switchOS", function(req, res){
 		return;
 	}
 	osName = osName.toLowerCase()
-	const otherOSList = validOSList.filter(os => os != config.osName)
-	if(otherOSList.includes(osName)){
+	if(config.otherOperatingSystems.includes(osName)){
 		res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!"})
 		result = execSync(osName)
 		if(result.stderr){

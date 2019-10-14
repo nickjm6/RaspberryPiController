@@ -1,11 +1,9 @@
-import React, { Component } from 'react'
-import { Jumbotron, Input, Row, Button } from 'reactstrap';
-import $ from 'jquery'
-
-import Loader from 'react-loader'
+import React from 'react'
+import { Jumbotron, Input, Button } from 'reactstrap';
 
 function CommandCenter(props) {
     let command = props.command;
+
     return (
         <Jumbotron style={{ textAlign: "center" }}>
             <h3>Command Center</h3>
@@ -19,10 +17,9 @@ function CommandCenter(props) {
                 command.commandName === "switchOS" ?
                     <Input type="select" name="commandData" onChange={props.onChange}>
                         <option value="">Select an OS to switch to</option>
-                        <option value="raspbian">Raspbian</option>
-                        <option value="retropie">Retropie</option>
-                        <option value="rasplex">Rasplex</option>
-                        <option value="kodi">Kodi</option>
+                        {props.otherOperatingSystems.map(os => 
+                            <option value={os}>{`${os.substr(0,1).toUpperCase()}${os.substr(1)}`}</option>
+                        )}
                     </Input> :
                     <Input type="text" name="commandData" placeholder="Type in a command" onChange={props.handleInputChange} />
             }<br />
