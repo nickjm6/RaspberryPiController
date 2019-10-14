@@ -104,7 +104,7 @@ class App extends Component {
         }
         return (
             <div>
-                {this.state.errMessage ? <Alert color="danger">{this.state.errMessage}</Alert> : null}
+                {this.state.errMessage ? <Alert color="danger" style={{marginTop: "15px"}}>{this.state.errMessage}</Alert> : null}
                 <Header piInfo={piInfo} loaded={this.state.loaded} loadingMessage={this.state.loadingMessage} />
                 {this.state.loaded ? <CommandCenter onChange={this.handleInputChange} onSubmit={this.handleSubmitClick} command={command}
                     otherOperatingSystems={this.state.otherOperatingSystems} /> : null}
