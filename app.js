@@ -73,7 +73,7 @@ app.post("/switchOS", function(req, res){
 	osName = osName.toLowerCase()
 	const otherOSList = validOSList.filter(os => os != config.osName)
 	if(otherOSList.includes(osName)){
-		res.json({message: "Attempting to switchOS"})
+		res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!"})
 		result = execSync(osName)
 		if(result.stderr){
 			console.error(result.stderr)
@@ -85,7 +85,7 @@ app.post("/switchOS", function(req, res){
 });
 
 app.post("/reboot", function(req, res){
-	res.json({message: "attempting reboot"})
+	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!"})
 	result = execSync("sudo reboot")
 	if(result.stderr){
 		console.error(result.stderr)
