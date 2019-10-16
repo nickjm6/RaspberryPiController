@@ -68,8 +68,6 @@ app.get("/osAndVolume", function(req, res){
 })
 
 app.post("/switchOS", function(req, res){
-	res.status(500).json({message: "You Suck"})
-	return
 	let osName = req.body.osName
 	console.log(`attempting to switch to: ${osName}`)
 	if(osName === undefined){
