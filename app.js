@@ -129,7 +129,7 @@ app.post("/volumedown", function(req, res){
 		res.status(400).json({message: "An internal error occured"})
 	}
 	else{
-		res.status.json({volume: parseInt(result)})
+		res.json({volume: parseInt(result)})
 	}
 })
 
