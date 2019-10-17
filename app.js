@@ -57,7 +57,7 @@ app.get("/getVol", function(req, res){
 })
 
 app.get("/osAndVolume", function(req, res){
-	result = execSync("vol");
+	result = execSync("./scripts/./vol");
 	if(result.stderr){
 		console.error(result.stderr)
 		res.status(400).json({message: "An internal error occured"});
@@ -112,7 +112,7 @@ app.post("/hdmi", function(req, res){
 })
 
 app.post("/volumeup", function(req, res){
-	result = execSync("vol +")
+	result = execSync("./scripts/./vol +")
 	if (result.stderr){
 		console.error(result.stderr)
 		res.status(500).json({message: "An internal error occured"})
@@ -123,7 +123,7 @@ app.post("/volumeup", function(req, res){
 })
 
 app.post("/volumedown", function(req, res){
-	result = execSync("vol -")
+	result = execSync("./scripts/./vol -")
 	if (result.stderr){
 		console.error(result.stderr)
 		res.status(400).json({message: "An internal error occured"})
