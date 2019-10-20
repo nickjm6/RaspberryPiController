@@ -35,7 +35,7 @@
     "start": "sudo node app.js",
     "build": "node ./env.js && webpack",
     "watch": "webpack --watch",
-    "start:dev": "concurrently \"sudo nodemon app.js\" \"npm run watch\""
+    "start:dev": "concurrently \"nodemon app.js\" \"npm run watch\""
   },
   "repository": {
     "type": "git",
