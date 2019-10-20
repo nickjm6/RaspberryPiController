@@ -34,40 +34,25 @@ app.get("/", function (req, res) {
 });
 
 app.get("/ping", function (req, res) {
-	res.json({
-		statusCode: 200, 
-		message: config.signature 
-	})
+	res.json({message: config.signature})
 })
 
 app.get("/currentOS", function (req, res) {
-	res.json({
-		statusCode: 200, 
-		currentOS: config.osName 
-	})
+	res.json({currentOS: config.osName})
 });
 
 app.get("/otherOperatingSystems", (req, res) => {
-	res.json({ 
-		statusCode: 200,
-		otherOperatingSystems: config.otherOperatingSystems 
-	})
+	res.json({otherOperatingSystems: config.otherOperatingSystems})
 })
 
 app.get("/getVol", function (req, res) {
-	result = execSync("vol")
+	result = execSync("./scripts/./vol")
 	if (result.stderr) {
 		console.error(result.stderr)
-		res.status(500).json({
-			statusCode: 500, 
-			message: "An internal error occured" 
-		})
+		res.status(500).json({message: "An internal error occured"})
 	}
 	else {
-		res.json({
-			statusCode: 200, 
-			volume: parseInt(result) 
-		});
+		res.json({volume: parseInt(result)});
 	}
 })
 
@@ -75,14 +60,10 @@ app.get("/osAndVolume", function (req, res) {
 	result = execSync("./scripts/./vol");
 	if (result.stderr) {
 		console.error(result.stderr)
-		res.status(500).json({
-			statusCode: 500, 
-			message: "An internal error occured" 
-		});
+		res.status(500).json({message: "An internal error occured"});
 	}
 	else {
 		res.json({
-			statusCode: 200, 
 			volume: parseInt(result), 
 			currentOS: config.osName 
 		});
@@ -93,49 +74,34 @@ app.post("/switchOS", function (req, res) {
 	let osName = req.body.osName
 	console.log(`attempting to switch to: ${osName}`)
 	if (osName === undefined) {
-		res.status(400).json({
-			statusCode: 400,
-			message: "Please enter a valid OS" 
-		});
+		res.status(400).json({message: "Please enter a valid OS"});
 		return;
 	}
 	osName = osName.toLowerCase()
 	if (config.otherOperatingSystems.includes(osName)) {
-		res.json({ 
-			statusCode: 200,
-			message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" 
-		})
-		// result = execSync(osName)
+		res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!"})
+		result = execSync(osName)
 		result = {}
 		if (result.stderr) {
 			console.error(result.stderr)
 		}
 	}
 	else {
-		res.status(400).json({ 
-			statusCode: 400,
-			message: "Invalid OS" 
-		})
+		res.status(400).json({message: "Invalid OS"})
 	}
 });
 
 app.post("/reboot", function (req, res) {
-	res.json({ 
-		statusCode: 200,
-		message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" 
-	})
+	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" })
 	result = {}
-	// result = execSync("sudo reboot")
+	result = execSync("sudo reboot")
 	if (result.stderr) {
 		console.error(result.stderr)
 	}
 })
 
 app.post("/rca", function (req, res) {
-	res.json({ 
-		statusCode: 200,
-		message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" 
-	})
+	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" })
 	execSync("rca")
 	if (result.stderr) {
 		console.error(result.stderr)
@@ -143,10 +109,7 @@ app.post("/rca", function (req, res) {
 })
 
 app.post("/hdmi", function (req, res) {
-	res.json({ 
-		statusCode: 200,
-		message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" 
-	})
+	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!"})
 	result = execSync("hdmi")
 	if (result.stderr) {
 		console.error(result.stderr)
@@ -157,16 +120,10 @@ app.post("/volumeup", function (req, res) {
 	result = execSync("./scripts/./vol +")
 	if (result.stderr) {
 		console.error(result.stderr)
-		res.status(500).json({ 
-			statusCode: 500,
-			message: "An internal error occured" 
-		})
+		res.status(500).json({message: "An internal error occured" })
 	}
 	else {
-		res.json({ 
-			statusCode: 200,
-			volume: parseInt(result) 
-		})
+		res.json({volume: parseInt(result)})
 	}
 })
 
@@ -174,16 +131,10 @@ app.post("/volumedown", function (req, res) {
 	result = execSync("./scripts/./vol -")
 	if (result.stderr) {
 		console.error(result.stderr)
-		res.status(500).json({ 
-			statusCode: 500,
-			message: "An internal error occured" 
-		})
+		res.status(500).json({message: "An internal error occured"})
 	}
 	else {
-		res.status.json({ 
-			statusCode: 200,
-			volume: parseInt(result)
-		 })
+		res.status.json({volume: parseInt(result)})
 	}
 })
 
