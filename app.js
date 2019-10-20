@@ -2,7 +2,7 @@
 const express = require('express');
 let app = express();
 const bodyParser = require('body-parser');
-const {execSync} = require("child_process")
+const { execSync } = require("child_process")
 
 const htmlPath = __dirname + "/frontend/html/"
 
@@ -15,29 +15,29 @@ app.use(bodyParser.json());
 
 let config = {}
 
-try{
+try {
 	config = require("./config.json")
-} catch(err){
+} catch (err) {
 	throw new Error("Environment config is not properly set up, please run the command 'npm run build'")
 }
 
 let requiredFields = ["osName", "signature", "port", "otherOperatingSystems"]
-for(let i = 0; i < requiredFields.length; i++){
+for (let i = 0; i < requiredFields.length; i++) {
 	let key = requiredFields[i]
-	if(!config[key]){
+	if (!config[key]) {
 		throw new Error("Config is not set up, please run 'npm run build'")
 	}
 }
 
-app.get("/", function(req, res){
+app.get("/", function (req, res) {
 	res.sendFile(htmlPath + "index.html");
 });
 
-app.get("/ping", function(req, res){
-		res.json({message: config.signature})
+app.get("/ping", function (req, res) {
+	res.json({message: config.signature})
 })
 
-app.get("/currentOS", function(req, res){
+app.get("/currentOS", function (req, res) {
 	res.json({currentOS: config.osName})
 });
 
@@ -45,88 +45,93 @@ app.get("/otherOperatingSystems", (req, res) => {
 	res.json({otherOperatingSystems: config.otherOperatingSystems})
 })
 
-app.get("/getVol", function(req, res){
-	result = execSync("vol")
-	if (result.stderr){
+app.get("/getVol", function (req, res) {
+	result = execSync("./scripts/./vol")
+	if (result.stderr) {
 		console.error(result.stderr)
 		res.status(500).json({message: "An internal error occured"})
 	}
-	else{
+	else {
 		res.json({volume: parseInt(result)});
 	}
 })
 
-app.get("/osAndVolume", function(req, res){
+app.get("/osAndVolume", function (req, res) {
 	result = execSync("./scripts/./vol");
-	if(result.stderr){
+	if (result.stderr) {
 		console.error(result.stderr)
-		res.status(400).json({message: "An internal error occured"});
+		res.status(500).json({message: "An internal error occured"});
 	}
-	else{
-		res.json({volume: parseInt(result), currentOS: config.osName});
+	else {
+		res.json({
+			volume: parseInt(result), 
+			currentOS: config.osName 
+		});
 	}
 })
 
-app.post("/switchOS", function(req, res){
+app.post("/switchOS", function (req, res) {
 	let osName = req.body.osName
 	console.log(`attempting to switch to: ${osName}`)
-	if(osName === undefined){
+	if (osName === undefined) {
 		res.status(400).json({message: "Please enter a valid OS"});
 		return;
 	}
 	osName = osName.toLowerCase()
-	if(config.otherOperatingSystems.includes(osName)){
+	if (config.otherOperatingSystems.includes(osName)) {
 		res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!"})
 		result = execSync(osName)
-		if(result.stderr){
+		result = {}
+		if (result.stderr) {
 			console.error(result.stderr)
 		}
 	}
-	else{
+	else {
 		res.status(400).json({message: "Invalid OS"})
 	}
 });
 
-app.post("/reboot", function(req, res){
-	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!"})
+app.post("/reboot", function (req, res) {
+	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" })
+	result = {}
 	result = execSync("sudo reboot")
-	if(result.stderr){
+	if (result.stderr) {
 		console.error(result.stderr)
 	}
 })
 
-app.post("/rca", function(req, res){
-	res.json({message: "Attempting reboot"})
+app.post("/rca", function (req, res) {
+	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" })
 	execSync("rca")
-	if(result.stderr){
+	if (result.stderr) {
 		console.error(result.stderr)
 	}
 })
 
-app.post("/hdmi", function(req, res){
-	res.json({message: "Attempting reboot"})
+app.post("/hdmi", function (req, res) {
+	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!"})
 	result = execSync("hdmi")
-	if(result.stderr){
+	if (result.stderr) {
 		console.error(result.stderr)
 	}
 })
 
-app.post("/volumeup", function(req, res){
+app.post("/volumeup", function (req, res) {
 	result = execSync("./scripts/./vol +")
-	if (result.stderr){
+	if (result.stderr) {
 		console.error(result.stderr)
-		res.status(500).json({message: "An internal error occured"})
+		res.status(500).json({message: "An internal error occured" })
 	}
-	else{
+	else {
 		res.json({volume: parseInt(result)})
 	}
 })
 
-app.post("/volumedown", function(req, res){
+app.post("/volumedown", function (req, res) {
 	result = execSync("./scripts/./vol -")
-	if (result.stderr){
+	if (result.stderr) {
 		console.error(result.stderr)
-		res.status(400).json({message: "An internal error occured"})
+		res.status(500).json({message: "An internal error occured"})
 	}
 	else{
 		res.json({volume: parseInt(result)})
@@ -135,5 +140,5 @@ app.post("/volumedown", function(req, res){
 
 
 app.listen(config.port, function () {
-  	console.log(`Server started at http://localhost:${config.port}`);
+	console.log(`Server started at http://localhost:${config.port}`);
 });

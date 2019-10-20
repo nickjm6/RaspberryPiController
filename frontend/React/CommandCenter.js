@@ -8,7 +8,7 @@ function CommandCenter(props) {
         <Jumbotron style={{ textAlign: "center" }}>
             <h3>Command Center</h3>
             <Input type="select" name="commandName" onChange={props.onChange}>
-                <option value="">Select a Command</option>
+                <option value="">&lt;Select a Command&gt;</option>
                 <option value="switchOS">Switch OS</option>
                 <option value="reboot">Reboot</option>
                 <option value="commandLine">Command Line</option>
@@ -16,7 +16,7 @@ function CommandCenter(props) {
             {command.commandName === "" || command.commandName === "reboot" ? null :
                 command.commandName === "switchOS" ?
                     <Input type="select" name="commandData" onChange={props.onChange}>
-                        <option value="">Select an OS to switch to</option>
+                        <option value="">&lt;Select an OS to switch to&gt;</option>
                         {props.otherOperatingSystems.map(os => 
                             <option value={os}>{`${os.substr(0,1).toUpperCase()}${os.substr(1)}`}</option>
                         )}

@@ -7,6 +7,7 @@ import CommandCenter from "./CommandCenter"
 
 import { Alert } from "reactstrap"
 
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -24,21 +25,53 @@ class App extends Component {
         this.handleSubmitClick = this.handleSubmitClick.bind(this);
         this.getOtherOperatingSystems = this.getOtherOperatingSystems.bind(this)
         this.queryPi = this.queryPi.bind(this);
+        this.requestPi = this.requestPi.bind(this);
+    }
+
+    async requestPi(route, config) {
+        try {
+            let res = await fetch(route, config)
+            let jsonRes = await res.json()
+            if (!jsonRes)
+                jsonRes = {}
+            if (res.status == 200) {
+                this.setState({
+                    loadingMessage: "",
+                    loaded: true
+                })
+                return await jsonRes
+            } else {
+                let message = jsonRes.message || "An error occured, please check logs"
+                let errMessage = `The server responded with a status code of ${res.status} when calling '${route}': '${message}'`
+                this.setState({
+                    errMessage,
+                    loadingMessage: "",
+                    loaded: true
+                })
+                throw new Error(errMessage)
+            }
+        } catch (err) {
+            this.setState({
+                errMessage: err.message,
+                loadingMessage: "",
+                loaded: true
+            })
+        }
     }
 
     queryPi() {
-        fetch("/currentOS").then(res => res.json()).then(jsonRes => {
-            this.setState({ currentOS: jsonRes.currentOS, loaded: true, loadingMessage: "" })
-        }).catch(err => {
-            this.setState({ errMessage: err.statusText })
+        this.requestPi("/currentOS").then(res => {
+            this.setState({ currentOS: res.currentOS })
+        }).catch(() => {
+            this.setState({ currentOS: null })
         })
     }
 
     getOtherOperatingSystems() {
-        fetch("/otherOperatingSystems").then(res => res.json()).then(jsonRes => {
-            this.setState({ otherOperatingSystems: jsonRes.otherOperatingSystems })
-        }).catch(err => {
-            this.setState({ errMessage: err.statusText })
+        this.requestPi("/otherOperatingSystems").then(res => {
+            this.setState({ otherOperatingSystems: res.otherOperatingSystems })
+        }).catch(() => {
+            this.setState({ otherOperatingSystems: [] })
         })
     }
 
@@ -61,7 +94,7 @@ class App extends Component {
         let validCommands = ["switchOS", "reboot"]
         if (this.state.commandName == "switchOS") {
             if (this.state.commandData == "") {
-                this.setState({ errMessage: "Please select and OS to switch to!" });
+                this.setState({ errMessage: "Please select an OS to switch to!" });
                 return;
             }
             data.osName = this.state.commandData
@@ -74,14 +107,12 @@ class App extends Component {
                 },
                 body: JSON.stringify(data)
             }
-            fetch(endpoint, opts).then(res => res.json()).then(jsonRes => {
-                let message = jsonRes && jsonRes.message ? jsonRes.message : "rebooting..."
+            this.requestPi(endpoint, opts).then(res => {
+                let message = res.message || "rebooting..."
                 this.setState({
                     loadingMessage: message,
                     loaded: false
                 });
-            }).catch(err => {
-                this.setState({ errMessage: err.message })
             })
         } else if (endpoint == "")
             this.setState({ errMessage: "Please select a command" })
@@ -104,7 +135,7 @@ class App extends Component {
         }
         return (
             <div>
-                {this.state.errMessage ? <Alert color="danger" style={{marginTop: "15px"}}>{this.state.errMessage}</Alert> : null}
+                {this.state.errMessage ? <Alert color="danger" style={{ marginTop: "15px" }}>{this.state.errMessage}</Alert> : null}
                 <Header piInfo={piInfo} loaded={this.state.loaded} loadingMessage={this.state.loadingMessage} />
                 {this.state.loaded ? <CommandCenter onChange={this.handleInputChange} onSubmit={this.handleSubmitClick} command={command}
                     otherOperatingSystems={this.state.otherOperatingSystems} /> : null}

@@ -25,13 +25,17 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
+    "concurrently": "^5.0.0",
     "css-loader": "^3.2.0",
     "mem": "^4.0.0",
+    "nodemon": "^1.19.4",
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
     "start": "sudo node app.js",
-    "build": "node ./env.js && webpack"
+    "build": "node ./env.js && webpack",
+    "watch": "webpack --watch",
+    "start:dev": "concurrently \"nodemon app.js\" \"npm run watch\""
   },
   "repository": {
     "type": "git",
