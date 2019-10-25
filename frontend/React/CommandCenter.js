@@ -14,7 +14,7 @@ function CommandCenter(props) {
                 <option value="poweroff">Poweroff</option>
                 <option value="commandLine">Command Line</option>
             </Input><br />
-            {command.commandName === "" || command.commandName === "reboot" ? null :
+            {command.commandName === "" || command.commandName === "reboot" || command.commandName === "poweroff" ? null :
                 command.commandName === "switchOS" ?
                     <Input type="select" name="commandData" onChange={props.onChange}>
                         <option value="">&lt;Select an OS to switch to&gt;</option>
