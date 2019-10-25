@@ -98,7 +98,17 @@ app.post("/reboot", function (req, res) {
 	if (result.stderr) {
 		console.error(result.stderr)
 	}
+});
+
+app.post("/poweroff", function (req, res) {
+	res.json({message: "The Raspberry Pi will now poweroff, Please turn it back on manually before refreshing the page." })
+	result = {}
+	result = execSync("sudo poweroff")
+	if (result.stderr) {
+		console.error(result.stderr)
+	}
 })
+
 
 app.post("/rca", function (req, res) {
 	res.json({message: "The Raspberry Pi will now reboot, Please give it a few seconds (10-15) seconds should work. Try refreshing again then!" })
