@@ -15,8 +15,10 @@ class App extends Component {
             currentOS: null,
             otherOperatingSystems: [],
             loaded: false,
-            errMessage: null,
-            loadingMessage: "Waiting for info on Raspberry Pi...",
+            message: {
+                type: "info",
+                text: "Waiting for info on Raspberry Pi..."
+            },
             commandName: "",
             commandData: ""
         }
@@ -36,7 +38,7 @@ class App extends Component {
                 jsonRes = {}
             if (res.status == 200) {
                 this.setState({
-                    loadingMessage: "",
+                    message: null,
                     loaded: true
                 })
                 return await jsonRes
@@ -44,16 +46,20 @@ class App extends Component {
                 let message = jsonRes.message || "An error occured, please check logs"
                 let errMessage = `The server responded with a status code of ${res.status} when calling '${route}': '${message}'`
                 this.setState({
-                    errMessage,
-                    loadingMessage: "",
+                    message: {
+                        type: "danger",
+                        text: errMessage
+                    },
                     loaded: true
                 })
                 throw new Error(errMessage)
             }
         } catch (err) {
             this.setState({
-                errMessage: err.message,
-                loadingMessage: "",
+                message: {
+                    type: "danger",
+                    text: err.message
+                },
                 loaded: true
             })
         }
@@ -76,7 +82,7 @@ class App extends Component {
     }
 
     handleInputChange(event) {
-        this.setState({ errMessage: null })
+        this.setState({ message: null })
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -88,13 +94,18 @@ class App extends Component {
     }
 
     handleSubmitClick() {
-        this.setState({ errMessage: null })
+        this.setState({ message: null })
         let endpoint = `/${this.state.commandName}`;
         let data = {};
         let validCommands = ["switchOS", "reboot"]
         if (this.state.commandName == "switchOS") {
             if (this.state.commandData == "") {
-                this.setState({ errMessage: "Please select an OS to switch to!" });
+                this.setState({
+                    message: {
+                        type: "danger",
+                        text: "Please select an OS to switch to!"
+                    }
+                });
                 return;
             }
             data.osName = this.state.commandData
@@ -110,14 +121,27 @@ class App extends Component {
             this.requestPi(endpoint, opts).then(res => {
                 let message = res.message || "rebooting..."
                 this.setState({
-                    loadingMessage: message,
+                    message: {
+                        text: message,
+                        type: "info"
+                    },
                     loaded: false
                 });
             })
         } else if (endpoint == "")
-            this.setState({ errMessage: "Please select a command" })
+            this.setState({
+                message: {
+                    text: "Please select a command",
+                    type: "danger"
+                }
+            })
         else
-            this.setState({ errMessage: "That functionality isn't implemented yet" })
+            this.setState({
+                message: {
+                    text: "That functionality isn't implemented yet",
+                    type: "danger"
+                }
+            })
     }
 
     componentDidMount() {
@@ -135,8 +159,8 @@ class App extends Component {
         }
         return (
             <div>
-                {this.state.errMessage ? <Alert color="danger" style={{ marginTop: "15px" }}>{this.state.errMessage}</Alert> : null}
-                <Header piInfo={piInfo} loaded={this.state.loaded} loadingMessage={this.state.loadingMessage} />
+                {this.state.message ? <Alert color={this.state.message.type} style={{ marginTop: "15px" }}>{this.state.message.text}</Alert> : null}
+                <Header piInfo={piInfo} loaded={this.state.loaded} />
                 {this.state.loaded ? <CommandCenter onChange={this.handleInputChange} onSubmit={this.handleSubmitClick} command={command}
                     otherOperatingSystems={this.state.otherOperatingSystems} /> : null}
             </div>

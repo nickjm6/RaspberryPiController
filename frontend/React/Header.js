@@ -1,7 +1,5 @@
-import React, { Component } from 'react'
-import { Jumbotron} from 'reactstrap';
-
-import Loader from 'react-loader'
+import React from 'react'
+import { Jumbotron, Spinner } from 'reactstrap';
 
 const style = {
     marginTop: "25px",
@@ -9,17 +7,16 @@ const style = {
 }
 
 function Header(props) {
-    let {currentOS} = props.piInfo;
+    let { currentOS } = props.piInfo;
     let formattedOS = currentOS ? currentOS.substring(0, 1).toUpperCase() + currentOS.slice(1) : null
     return (
         <Jumbotron style={style}>
-            {props.loaded ? 
-                        <h3>Current OS: {formattedOS}</h3> :
+            {props.loaded ?
+                <h3>Current OS: {formattedOS}</h3> :
                 <div>
-                    <h2>{props.loadingMessage}</h2>
-                    <Loader loaded={props.loaded} />
+                    {props.loaded ? null : <Spinner color="primary" />}
                 </div>
-            } 
+            }
         </Jumbotron>
     )
 };
