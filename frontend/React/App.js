@@ -97,7 +97,7 @@ class App extends Component {
         this.setState({ message: null })
         let endpoint = `/${this.state.commandName}`;
         let data = {};
-        let validCommands = ["switchOS", "reboot"]
+        let validCommands = ["switchOS", "reboot", "poweroff"]
         if (this.state.commandName == "switchOS") {
             if (this.state.commandData == "") {
                 this.setState({
