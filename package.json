@@ -7,10 +7,8 @@
     "babel-runtime": "^6.26.0",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
-    "chai": "^4.2.0",
     "debug": "^2.6.9",
     "jquery": "^3.4.1",
-    "mocha": "^5.2.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "reactstrap": "^8.0.0",
@@ -24,17 +22,23 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
+    "chai": "^4.2.0",
     "concurrently": "^5.0.0",
     "css-loader": "^3.2.0",
     "mem": "^4.3.0",
+    "mocha": "^5.2.0",
     "nodemon": "^1.19.4",
+    "sinon": "^7.5.0",
+    "sinon-chai": "^3.3.0",
+    "supertest": "^4.0.2",
     "webpack-cli": "^3.3.9"
   },
   "scripts": {
     "start": "sudo node app.js",
     "build": "node ./env.js && webpack",
     "watch": "webpack --watch",
-    "start:dev": "concurrently \"nodemon app.js\" \"npm run watch\""
+    "start:dev": "concurrently \"nodemon app.js\" \"npm run watch\"",
+    "test": "mocha ./test/*.test.js"
   },
   "repository": {
     "type": "git",
