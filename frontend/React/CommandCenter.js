@@ -3,7 +3,7 @@ import { Jumbotron, Input, Button } from 'reactstrap';
 
 function CommandCenter(props) {
     let command = props.command;
-
+    let submitDisabled = command.commandName === "" ? true : command.commandName === "switchOS" && command.commandData == ""
     return (
         <Jumbotron style={{ textAlign: "center" }}>
             <h3>Command Center</h3>
@@ -24,7 +24,7 @@ function CommandCenter(props) {
                     </Input> :
                     <Input type="text" name="commandData" placeholder="Type in a command" onChange={props.handleInputChange} />
             }<br />
-            {command.commandName === "" ? null : <Button color="info" onClick={props.onSubmit}>Submit</Button>}
+            {<Button color="info" onClick={props.onSubmit} disabled={submitDisabled}>Submit</Button>}
         </Jumbotron>
     )
 };

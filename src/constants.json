@@ -1,0 +1,6 @@
+{
+    "messages": {
+        "reboot": "The Raspberry Pi will now reboot, Please give it a few seconds! 10-15 seconds should work, try refreshing again then!",
+        "internalError": "An internal error occured! Please check Logs!"
+    }
+}

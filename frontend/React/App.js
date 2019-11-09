@@ -66,7 +66,7 @@ class App extends Component {
     }
 
     queryPi() {
-        this.requestPi("/currentOS").then(res => {
+        this.requestPi("/operatingSystem/current").then(res => {
             this.setState({ currentOS: res.currentOS })
         }).catch(() => {
             this.setState({ currentOS: null })
@@ -74,7 +74,7 @@ class App extends Component {
     }
 
     getOtherOperatingSystems() {
-        this.requestPi("/otherOperatingSystems").then(res => {
+        this.requestPi("/operatingSystem/other").then(res => {
             this.setState({ otherOperatingSystems: res.otherOperatingSystems })
         }).catch(() => {
             this.setState({ otherOperatingSystems: [] })
@@ -95,53 +95,65 @@ class App extends Component {
 
     handleSubmitClick() {
         this.setState({ message: null })
-        let endpoint = `/${this.state.commandName}`;
+        let { commandName, commandData } = this.state;
+        let endpoint = "/"
         let data = {};
-        let validCommands = ["switchOS", "reboot", "poweroff"]
-        if (this.state.commandName == "switchOS") {
-            if (this.state.commandData == "") {
+        switch (commandName) {
+            case "switchOS":
+                endpoint = "/operatingSystem/switch"
+                if (commandData == "") {
+                    this.setState({
+                        message: {
+                            type: "danger",
+                            text: "Please select an OS to switch to!"
+                        }
+                    })
+                    return;
+                }
+                data.osName = this.state.commandData
+                break;
+            case "reboot":
+                endpoint = "/power/reboot"
+                break;
+            case "poweroff":
+                endpoint = "/power/off"
+                break;
+            case "":
+            case undefined:
+            case null:
                 this.setState({
                     message: {
-                        type: "danger",
-                        text: "Please select an OS to switch to!"
+                        text: "Please select a command",
+                        type: "danger"
                     }
-                });
+                })
                 return;
-            }
-            data.osName = this.state.commandData
-        }
-        if (validCommands.includes(this.state.commandName)) {
-            const opts = {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }
-            this.requestPi(endpoint, opts).then(res => {
-                let message = res.message || "rebooting..."
+            default:
                 this.setState({
                     message: {
-                        text: message,
-                        type: "info"
-                    },
-                    loaded: false
-                });
-            })
-        } else if (endpoint == "")
+                        text: "That functionality isn't implemented yet",
+                        type: "danger"
+                    }
+                })
+                return;
+        }
+        const opts = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+        this.requestPi(endpoint, opts).then(res => {
+            let message = res.message || "rebooting..."
             this.setState({
                 message: {
-                    text: "Please select a command",
-                    type: "danger"
-                }
-            })
-        else
-            this.setState({
-                message: {
-                    text: "That functionality isn't implemented yet",
-                    type: "danger"
-                }
-            })
+                    text: message,
+                    type: "info"
+                },
+                loaded: false
+            });
+        })
     }
 
     componentDidMount() {
