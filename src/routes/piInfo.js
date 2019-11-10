@@ -1,10 +1,10 @@
 let router = require("express").Router();
 
 const {osName, otherOperatingSystems} = require("../../config")
-const {getVol} = require("../utils")
+const utils = require("../utils")
 
 router.get("/", (req, res) => {
-    let volume = getVol();
+    let volume = utils.getVol();
     res.json({
         currentOS: osName,
         otherOperatingSystems,

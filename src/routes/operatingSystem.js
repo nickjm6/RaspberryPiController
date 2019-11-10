@@ -1,5 +1,5 @@
 let router = require("express").Router()
-const { execSync } = require("child_process")
+const childProcess = require("child_process")
 
 let config = require("../../config.json")
 
@@ -24,8 +24,7 @@ router.post("/switch", (req, res) => {
 	osName = osName.toLowerCase()
 	if (config.otherOperatingSystems.includes(osName)) {
         res.json({message: rebootMessage})
-        result = execSync(osName)
-		result = {}
+        result = childProcess.execSync(osName)
 		if (result.stderr) {
 			console.error(result.stderr)
 		}

@@ -1,9 +1,9 @@
-const { execSync } = require("child_process")
+const childProcess = require("child_process")
 
-const volScript = "../scripts/vol"
+const volScript = "./scripts/vol"
 
 let getVol = async () => {
-    let result = execSync(volScript)
+    let result = childProcess.execSync(volScript)
     if (result.stderr)
         throw new Error(result.stderr)
     return parseInt(result);
@@ -11,7 +11,7 @@ let getVol = async () => {
 
 let setVol = async direction => {
     if (["+", "-"].includes(direction)) {
-        let result = execSync(`${volScript} ${direction}`)
+        let result = childProcess.execSync(`${volScript} ${direction}`)
         if (result.stderr)
             throw new Error(result.stderr)
         return parseInt(result)

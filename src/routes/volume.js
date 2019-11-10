@@ -1,12 +1,12 @@
 let router = require("express").Router();
 
-const {getVol, setVol} = require("../utils")
+const utils = require("../utils")
 
 const internalErrorMessage = require("../constants").messages.internalError
 
 router.get("/", async (req, res) => {
     try{
-        let volume = await getVol();
+        let volume = await utils.getVol();
         res.json({volume})
     } catch(err){
         console.error(err);
@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
 
 router.post("/up", async (req, res) => {
 	try {
-        let volume = await setVol("+");
+        let volume = await utils.setVol("+");
         res.json({volume})
     } catch(err){
         console.error(err);
@@ -25,9 +25,9 @@ router.post("/up", async (req, res) => {
     }
 })
 
-router.post("/volumedown", async (req, res) => {
+router.post("/down", async (req, res) => {
 	try {
-        let volume = await setVol("-");
+        let volume = await utils.setVol("-");
         res.json({volume})
     } catch(err){
         console.error(err);
