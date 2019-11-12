@@ -1,29 +1,5 @@
-let requiredVariables = [
-    {
-        name: "osName",
-        description: "The name (all lowercase) of the operating system that this is being run on [Default: 'raspbian']",
-        default: "raspbian",
-        type: "string"
-    }, 
-    {
-        name: "port",
-        description: "The port number that the server should host on [Default: 80]",
-        default: 80,
-        type: "number"
-    }, 
-    {
-        name: "signature",
-        description: "The 'signature' that the server should send back on ping [Default: 'MyRazPi']",
-        default: "MyRazPi",
-        type: "string"
-    }, 
-    {
-        name: "otherOperatingSystems",
-        description: "A list of other operating systems (separated by space) that this device can switch to [Default (empty)]",
-        default: [],
-        type: "array"
-    }
-]
+let requiredVariables = require("./env.json")
+
 let config = {}
 const readline = require('readline')
 const fs = require("fs")
@@ -77,4 +53,5 @@ let checkVariables = async () => {
         let res = JSON.stringify(config, null, 2)
         fs.writeFileSync("config.json", res)
     }
+    console.log("Successfully set environment, now waiting for react to build...")
 })()

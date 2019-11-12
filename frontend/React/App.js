@@ -7,6 +7,8 @@ import CommandCenter from "./CommandCenter"
 
 import { Alert } from "reactstrap"
 
+import io from "socket.io-client"
+
 
 class App extends Component {
     constructor(props) {
@@ -159,6 +161,10 @@ class App extends Component {
     componentDidMount() {
         this.queryPi()
         this.getOtherOperatingSystems()
+
+        const socket = io(window.location.href)
+        socket.on("ping", data => {console.log(data)})
+        socket.emit("event", "Hi Server, how's it going?")
     }
 
     render() {
