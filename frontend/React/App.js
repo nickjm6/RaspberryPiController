@@ -164,7 +164,8 @@ class App extends Component {
 
         const socket = io(window.location.href)
         socket.on("ping", data => {console.log(data)})
-        socket.emit("event", "Hi Server, how's it going?")
+        socket.on("sshconnect", data => {console.log(data);socket.emit("command", "ls")})
+        socket.on("data", data => {console.log(data)})
     }
 
     render() {
