@@ -22,7 +22,8 @@ class App extends Component {
                 text: "Waiting for info on Raspberry Pi..."
             },
             commandName: "",
-            commandData: ""
+            commandData: "",
+            socket: null,
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -30,6 +31,16 @@ class App extends Component {
         this.getOtherOperatingSystems = this.getOtherOperatingSystems.bind(this)
         this.queryPi = this.queryPi.bind(this);
         this.requestPi = this.requestPi.bind(this);
+        this.sendCommand = this.sendCommand.bind(this);
+    }
+
+    sendCommand(cmd) {
+        let socket = this.state.socket
+        if(!socket){
+            console.log("Terminal is not yet connected...")
+        } else {
+            socket.emit("command", cmd.join(" "))
+        }
     }
 
     async requestPi(route, config) {
@@ -163,9 +174,8 @@ class App extends Component {
         this.getOtherOperatingSystems()
 
         const socket = io(window.location.href)
-        socket.on("ping", data => {console.log(data)})
-        socket.on("sshconnect", data => {console.log(data);socket.emit("command", "ls")})
         socket.on("data", data => {console.log(data)})
+        this.setState({socket})
     }
 
     render() {
@@ -181,7 +191,7 @@ class App extends Component {
                 {this.state.message ? <Alert color={this.state.message.type} style={{ marginTop: "15px" }}>{this.state.message.text}</Alert> : null}
                 <Header piInfo={piInfo} loaded={this.state.loaded} />
                 {this.state.loaded ? <CommandCenter onChange={this.handleInputChange} onSubmit={this.handleSubmitClick} command={command}
-                    otherOperatingSystems={this.state.otherOperatingSystems} /> : null}
+                    otherOperatingSystems={this.state.otherOperatingSystems} sendCommand={this.sendCommand} /> : null}
             </div>
         );
     }

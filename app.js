@@ -1,4 +1,6 @@
 let config = {}
+const stripAnsi = require("strip-ansi")
+
 
 try {
 	config = require("./config")
@@ -30,21 +32,26 @@ io.on("connection", client => {
 	conn.on("ready", () => {
 		console.log(`Client is connected to ssh terminal (${ipAddress})`)
 		conn.shell((err, stream) => {
-			client.emit("sshconnect", "You have successfully connect via ssh")
+			client.emit("data", "You have successfully connect via ssh")
 			if(err){
-				client.emit("error", err.message)
+				client.emit("data", err.message)
 			}
 
 			client.on("command", command => {
-				console.log(`COMMAND: ${command} (${ipAddress})`)
-				stream.write(`${command}\n`)
+				try{
+					console.log(`COMMAND: ${command} (${ipAddress})`)
+					stream.write(`${command}\n`)
+				}catch(err){
+					client.emit("data", "failed to write to console, maybe you have disconnected?")
+				}
 			})
 
 			stream.on("close", () => {
 				console.log(`closing stream with client (${ipAddress})`)
+				client.emit("data", "you have closed the connection to ssh, you should try refreshing again")
 				conn.end()
 			}).on("data", data => {
-				client.emit("data", data.toString("utf8"))
+				client.emit("data", stripAnsi(data.toString()))
 			})
 		})
 	}).connect({

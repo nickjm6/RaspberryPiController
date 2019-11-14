@@ -1,5 +1,6 @@
 import React from 'react'
-import { Jumbotron, Input, Button } from 'reactstrap';
+import { Jumbotron, Input, Button, Row, Col } from 'reactstrap';
+import Terminal from "terminal-in-react"
 
 function CommandCenter(props) {
     let command = props.command;
@@ -12,7 +13,6 @@ function CommandCenter(props) {
                 <option value="switchOS">Switch OS</option>
                 <option value="reboot">Reboot</option>
                 <option value="poweroff">Poweroff</option>
-                <option value="commandLine">Command Line</option>
             </Input><br />
             {command.commandName === "" || command.commandName === "reboot" || command.commandName === "poweroff" ? null :
                 command.commandName === "switchOS" ?
@@ -25,6 +25,12 @@ function CommandCenter(props) {
                     <Input type="text" name="commandData" placeholder="Type in a command" onChange={props.handleInputChange} />
             }<br />
             {<Button color="info" onClick={props.onSubmit} disabled={submitDisabled}>Submit</Button>}
+            <Row style={{marginTop: "20px"}}>
+                    <Terminal color="green" backgroundColor="black" hideTopBar style={{fontWeight: "bold", fontSize: "1em"}}
+                        watchConsoleLogging commandPassThrough={cmd => {
+                            props.sendCommand(cmd)
+                        }} startState="maximised" />
+            </Row>
         </Jumbotron>
     )
 };
