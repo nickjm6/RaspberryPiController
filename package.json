@@ -8,7 +8,7 @@
     "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
     "debug": "^2.6.9",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "reactstrap": "^8.0.0",
