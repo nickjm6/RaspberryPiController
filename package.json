@@ -5,7 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "babel-runtime": "^6.26.0",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "bootstrap": "^4.3.1",
     "debug": "^2.6.9",
     "jquery": "^3.4.1",
